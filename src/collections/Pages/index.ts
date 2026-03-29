@@ -47,6 +47,8 @@ import { InformationBlock } from '@/blocks/Information/config'
 import { LinkCardsGridBlock } from '@/blocks/LinkCardsGrid/config'
 import { AllDocumentsBlock } from '@/blocks/AllDocuments/config'
 import { HeadingBlock } from '@/blocks/Heading/config'
+import { ContentBlock } from '@/blocks/Content/config'
+import { MediaBlock } from '@/blocks/MediaBlock/config'
 
 import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
 
@@ -80,6 +82,8 @@ const BLOCKS = [
   LinkCardsGridBlock,
   AllDocumentsBlock,
   HeadingBlock,
+  ContentBlock,
+  MediaBlock,
 ]
 
 export const Pages: CollectionConfig<'pages'> = {

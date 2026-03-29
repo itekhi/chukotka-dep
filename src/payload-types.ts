@@ -196,6 +196,8 @@ export interface Page {
     | LinkCardsGridBlock
     | AllDocumentsBlock
     | HeadingBlock
+    | ContentBlock
+    | MediaBlock
   )[];
   meta?: {
     title?: string | null;
@@ -1635,6 +1637,52 @@ export interface HeadingBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContentBlock".
+ */
+export interface ContentBlock {
+  richText: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  link: {
+    type: 'off' | 'reference' | 'document' | 'custom';
+    newTab?: boolean | null;
+    reference?: {
+      relationTo: 'pages';
+      value: string | Page;
+    } | null;
+    document?: (string | null) | Document;
+    url?: string | null;
+    anchor?: string | null;
+    label?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'content';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaBlock".
+ */
+export interface MediaBlock {
+  media: string | Media;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'media';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -1908,6 +1956,8 @@ export interface PagesSelect<T extends boolean = true> {
         linkCardsGrid?: T | LinkCardsGridBlockSelect<T>;
         allDocuments?: T | AllDocumentsBlockSelect<T>;
         heading?: T | HeadingBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        media?: T | MediaBlockSelect<T>;
       };
   meta?:
     | T
@@ -2923,6 +2973,35 @@ export interface AllDocumentsBlockSelect<T extends boolean = true> {
 export interface HeadingBlockSelect<T extends boolean = true> {
   title?: T;
   hidden?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContentBlock_select".
+ */
+export interface ContentBlockSelect<T extends boolean = true> {
+  richText?: T;
+  link?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        document?: T;
+        url?: T;
+        anchor?: T;
+        label?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaBlock_select".
+ */
+export interface MediaBlockSelect<T extends boolean = true> {
+  media?: T;
   id?: T;
   blockName?: T;
 }

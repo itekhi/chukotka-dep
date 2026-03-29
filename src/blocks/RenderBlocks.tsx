@@ -35,6 +35,8 @@ import { InformationBlock } from './Information/Component'
 import { LinkCardsGridBlock } from './LinkCardsGrid/Component'
 import { AllDocumentsBlock } from './AllDocuments/Component'
 import { HeadingBlock } from './Heading/Component'
+import { ContentBlock } from './Content/Component'
+import { MediaBlock } from './MediaBlock/Component'
 
 const blockComponents = {
   heroBanner: HeroBannerBlock,
@@ -66,6 +68,8 @@ const blockComponents = {
   linkCardsGrid: LinkCardsGridBlock,
   allDocuments: AllDocumentsBlock,
   heading: HeadingBlock,
+  content: ContentBlock,
+  media: MediaBlock,
 }
 
 const overflowingBlocks = [
