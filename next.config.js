@@ -2,12 +2,12 @@ import { withPayload } from '@payloadcms/next/withPayload'
 
 import redirects from './redirects.js'
 
-const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
-  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : undefined || 'http://localhost:3000'
+const NEXT_PUBLIC_SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
+
   images: {
     remotePatterns: [
       ...[NEXT_PUBLIC_SERVER_URL, 'http://itekhi-mm.local:3000'].map((item) => {
