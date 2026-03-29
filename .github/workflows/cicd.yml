@@ -1,0 +1,59 @@
+name: Deploy Chukotka App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '25'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Pre-build Next.js App
+        run: npx next build --experimental-build-mode compile
+
+      - name: Prepare Standalone Bundle
+        # Next.js standalone doesn't include public/ or static/ by default.
+        # We move them into the standalone folder so we only have to rsync ONE directory.
+        run: |
+          cp -r public .next/standalone/public
+          cp -r .next/static .next/standalone/.next/static
+
+      - name: Setup SSH Connection (For Rsync)
+        # Native rsync needs this key temporarily available on the runner to connect.
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Rsync Standalone to Remote
+        # We sync the CONTENTS of .next/standalone/ to the DEPLOY_DIR
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
+            .next/standalone/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_DIR }}
+
+      - name: Execute Remote Script via Appleboy
+        # Appleboy handles its own SSH connection entirely through these inputs
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ secrets.DEPLOY_DIR }}
+            bash ./restart-app.sh

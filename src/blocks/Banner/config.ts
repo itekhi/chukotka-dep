@@ -2,36 +2,64 @@ import type { Block } from 'payload'
 
 import {
   FixedToolbarFeature,
+  HeadingFeature,
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 
-export const Banner: Block = {
+export const BannerBlock: Block = {
   slug: 'banner',
+  interfaceName: 'BannerBlock',
+  labels: {
+    singular: 'Баннер',
+    plural: 'Баннеры',
+  },
+  admin: {
+    images: {
+      thumbnail: '/block-examples/banner.jpg',
+    },
+  },
   fields: [
     {
-      name: 'style',
-      type: 'select',
-      defaultValue: 'info',
-      options: [
-        { label: 'Info', value: 'info' },
-        { label: 'Warning', value: 'warning' },
-        { label: 'Error', value: 'error' },
-        { label: 'Success', value: 'success' },
-      ],
-      required: true,
+      name: 'title',
+      type: 'text',
+      label: 'Заголовок',
     },
     {
-      name: 'content',
+      name: 'titleAsH2',
+      type: 'checkbox',
+      label: 'Заголовок - H2?',
+    },
+    {
+      name: 'richText',
       type: 'richText',
+      label: 'Текст',
+      required: true,
       editor: lexicalEditor({
         features: ({ rootFeatures }) => {
-          return [...rootFeatures, FixedToolbarFeature(), InlineToolbarFeature()]
+          return [
+            ...rootFeatures,
+            HeadingFeature({ enabledHeadingSizes: ['h3', 'h4'] }),
+            FixedToolbarFeature(),
+            InlineToolbarFeature(),
+          ]
         },
       }),
-      label: false,
-      required: true,
+      admin: {
+        description: 'Текст имеет ограничение по ширине.',
+      },
+    },
+    {
+      name: 'image',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Изображение',
+      filterOptions: {
+        mimeType: { contains: 'image' },
+      },
+      admin: {
+        description: 'Изображение вмещается в высоту баннера, и смещается к правому углу.',
+      },
     },
   ],
-  interfaceName: 'BannerBlock',
 }

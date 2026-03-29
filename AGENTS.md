@@ -119,13 +119,6 @@ export const Users: CollectionConfig = {
 import { slugField } from 'payload'
 slugField({ fieldToUse: 'title' })
 
-// Relationship with filtering
-{
-  name: 'category',
-  type: 'relationship',
-  relationTo: 'categories',
-  filterOptions: { active: { equals: true } },
-}
 
 // Conditional field
 {

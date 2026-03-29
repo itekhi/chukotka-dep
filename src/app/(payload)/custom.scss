@@ -1,0 +1,48 @@
+/* admin logo */
+
+.admin-logo {
+  width: 300px;
+  display: none;
+}
+[data-theme="dark"] {
+  .admin-logo.light {
+    display: block;
+  }
+}
+[data-theme="light"] {
+  .admin-logo.dark {
+    display: block;
+  }
+}
+
+/* admin login */
+section.login .btn, section.login input {
+  border-radius: 10px;
+}
+
+/* other stuff */
+
+.template-default .collection-list--documents table .cell-title {
+  width: 62%;
+}
+
+
+dialog .collection-list--documents table .cell-title {
+  width: 65%;
+
+  & button {
+    width: 100%;
+    white-space: normal;
+  }
+}
+
+
+[id$=link] .field-type.relationship[id$="document"] {
+  & .react-select .rs__control {
+    flex-wrap: nowrap;
+
+    & .rs__single-value {
+      grid-area: 1 / 1 / 1 / 1;
+    }
+  }
+}

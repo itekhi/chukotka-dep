@@ -1,18 +1,21 @@
+import { buildConfig, PayloadRequest } from 'payload'
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
+import { ru } from '@payloadcms/translations/languages/ru'
+import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 import path from 'path'
-import { buildConfig, PayloadRequest } from 'payload'
-import { fileURLToPath } from 'url'
 
-import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
-import { Posts } from './collections/Posts'
+// import { Posts } from './collections/Posts'
+import { News } from './collections/News'
+import { Documents } from './collections/Documents'
+import { DocumentCategories } from './collections/DocumentCategories'
 import { Users } from './collections/Users'
-import { Footer } from './Footer/config'
-import { Header } from './Header/config'
+import { Footer } from './globals/Footer/config'
+import { Header } from './globals/Header/config'
 import { plugins } from './plugins'
-import { defaultLexical } from '@/fields/defaultLexical'
+import { defaultLexical } from './richtext/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
@@ -21,6 +24,10 @@ const dirname = path.dirname(filename)
 export default buildConfig({
   admin: {
     components: {
+      graphics: {
+        Logo: '@/components/AdminLogo/Logo',
+        Icon: '@/components/AdminLogo/Icon',
+      },
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below.
       beforeLogin: ['@/components/BeforeLogin'],
@@ -55,12 +62,27 @@ export default buildConfig({
       ],
     },
   },
+  i18n: {
+    supportedLanguages: { ru },
+    // Optional but recommended: also set it as fallback
+    fallbackLanguage: 'ru',
+
+    translations: {
+      ru: {
+        // example overrides
+        // general: { dashboard: 'Панель управления' }
+      },
+    },
+  },
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
   db: mongooseAdapter({
     url: process.env.DATABASE_URL || '',
   }),
-  collections: [Pages, Posts, Media, Categories, Users],
+  graphQL: {
+    disable: true,
+  },
+  collections: [Pages, News, Documents, DocumentCategories, Media, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins,

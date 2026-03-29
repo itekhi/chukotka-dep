@@ -1,17 +1,5 @@
-import type { CollectionConfig } from 'payload'
-
-import { authenticated } from '../../access/authenticated'
-import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-import { Archive } from '../../blocks/ArchiveBlock/config'
-import { CallToAction } from '../../blocks/CallToAction/config'
-import { Content } from '../../blocks/Content/config'
-import { FormBlock } from '../../blocks/Form/config'
-import { MediaBlock } from '../../blocks/MediaBlock/config'
-import { hero } from '@/heros/config'
 import { slugField } from 'payload'
-import { populatePublishedAt } from '../../hooks/populatePublishedAt'
-import { generatePreviewPath } from '../../utilities/generatePreviewPath'
-import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
+import type { CollectionConfig } from 'payload'
 
 import {
   MetaDescriptionField,
@@ -21,8 +9,85 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 
+import { authenticated } from '@/access/authenticated'
+import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
+import { populatePublishedAt } from '@/hooks/populatePublishedAt'
+import { generatePreviewPath } from '@/utilities/generatePreviewPath'
+import { slugify } from '@/fields/slug'
+
+// import { CallToAction } from '@/blocks/CallToAction/config'
+// import { Content } from '@/blocks/Content/config'
+// import { hero } from '@/heros/config'
+import { HeroBannerBlock } from '@/blocks/HeroBanner/config'
+import { BannerBlock } from '@/blocks/Banner/config'
+import { NavCardsBlock } from '@/blocks/NavCards/config'
+import { TeamCardsBlock } from '@/blocks/TeamCards/config'
+import { OrganizationsBlock } from '@/blocks/Organizations/config'
+import { UsefulResourcesBlock } from '@/blocks/UsefulResources/config'
+import { DocumentsBlock } from '@/blocks/Documents/config'
+import { NewsBlock } from '@/blocks/News/config'
+import { BigTilesBlock } from '@/blocks/BigTiles/config'
+import { TwoPanelsWithTilesBlock } from '@/blocks/TwoBlocksWithTiles/config'
+import { ListPanelsBlock } from '@/blocks/ListPanels/config'
+import { ListPanelWithBannerBlock } from '@/blocks/ListPanelWithBanner/config'
+import { ListPanelWith2TilesBlock } from '@/blocks/ListPanelWith2Tiles/config'
+import { PanelsRowsAndListBlock } from '@/blocks/PanelsRowsAndList/config'
+import { TabbedBannerBlock } from '@/blocks/TabbedBanner/config'
+import { TilesGridBlock } from '@/blocks/TilesGrid/config'
+import { CollapsibleBlocksBlock } from '@/blocks/CollapsibleBlocks/config'
+import { BannersGridBlock } from '@/blocks/BannersGrid/config'
+import { ContactInfoBlock } from '@/blocks/ContactInfo/config'
+import { InfoTilesBlock } from '@/blocks/InfoTiles/config'
+import { MediaCardsBlock } from '@/blocks/MediaCards/config'
+import { ContentTilesBlock } from '@/blocks/ContentTiles/config'
+import { InfoTileWithSliderBlock } from '@/blocks/InfoTileWithSlider/config'
+import { TabbedTilesGridBlock } from '@/blocks/TabbedTilesGrid/config'
+import { InfoCardsBlock } from '@/blocks/InfoCards/config'
+import { InformationBlock } from '@/blocks/Information/config'
+import { LinkCardsGridBlock } from '@/blocks/LinkCardsGrid/config'
+import { AllDocumentsBlock } from '@/blocks/AllDocuments/config'
+import { HeadingBlock } from '@/blocks/Heading/config'
+
+import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
+
+const BLOCKS = [
+  HeroBannerBlock,
+  BannerBlock,
+  NavCardsBlock,
+  TeamCardsBlock,
+  OrganizationsBlock,
+  UsefulResourcesBlock,
+  DocumentsBlock,
+  NewsBlock,
+  BigTilesBlock,
+  TwoPanelsWithTilesBlock,
+  ListPanelsBlock,
+  ListPanelWithBannerBlock,
+  ListPanelWith2TilesBlock,
+  PanelsRowsAndListBlock,
+  TabbedBannerBlock,
+  TilesGridBlock,
+  CollapsibleBlocksBlock,
+  BannersGridBlock,
+  ContactInfoBlock,
+  InfoTilesBlock,
+  MediaCardsBlock,
+  ContentTilesBlock,
+  InfoTileWithSliderBlock,
+  TabbedTilesGridBlock,
+  InfoCardsBlock,
+  InformationBlock,
+  LinkCardsGridBlock,
+  AllDocumentsBlock,
+  HeadingBlock,
+]
+
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
+  labels: {
+    singular: 'Страница',
+    plural: 'Страницы',
+  },
   access: {
     create: authenticated,
     delete: authenticated,
@@ -30,8 +95,6 @@ export const Pages: CollectionConfig<'pages'> = {
     update: authenticated,
   },
   // This config controls what's populated by default when a page is referenced
-  // https://payloadcms.com/docs/queries/select#defaultpopulate-collection-config-property
-  // Type safe if the collection slug generic is passed to `CollectionConfig` - `CollectionConfig<'pages'>
   defaultPopulate: {
     title: true,
     slug: true,
@@ -53,33 +116,39 @@ export const Pages: CollectionConfig<'pages'> = {
         req,
       }),
     useAsTitle: 'title',
+    pagination: {
+      defaultLimit: 25,
+      limits: [10, 25, 50, 100],
+    },
   },
   fields: [
     {
       name: 'title',
       type: 'text',
+      label: 'Название',
       required: true,
     },
     {
       type: 'tabs',
       tabs: [
-        {
-          fields: [hero],
-          label: 'Hero',
-        },
+        // {
+        //   fields: [hero],
+        //   label: 'Hero',
+        // },
         {
           fields: [
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock],
+              label: false,
+              blocks: BLOCKS,
               required: true,
               admin: {
                 initCollapsed: true,
               },
             },
           ],
-          label: 'Content',
+          label: 'Контент',
         },
         {
           name: 'meta',
@@ -92,12 +161,29 @@ export const Pages: CollectionConfig<'pages'> = {
             }),
             MetaTitleField({
               hasGenerateFn: true,
+              overrides: {
+                label: 'Заголовок',
+              },
             }),
             MetaImageField({
               relationTo: 'media',
+              overrides: {
+                label: 'Изображение (opengraph)',
+                admin: {
+                  description:
+                    'Загрузите изображение для предпросмотра ссылки в соцсетях (Open Graph).\nРекомендуемый размер: 1200 × 630 пикселей.\nСоотношение сторон: 1.91:1. Формат: JPG/PNG/WebP. Вес до 2 МБ.',
+                },
+                filterOptions: {
+                  mimeType: { in: ['image/jpg', 'image/png', 'image/webp'] },
+                },
+              },
             }),
 
-            MetaDescriptionField({}),
+            MetaDescriptionField({
+              overrides: {
+                label: 'Описание',
+              },
+            }),
             PreviewField({
               // if the `generateUrl` function is configured
               hasGenerateFn: true,
@@ -113,11 +199,14 @@ export const Pages: CollectionConfig<'pages'> = {
     {
       name: 'publishedAt',
       type: 'date',
+      label: 'Дата публикации',
       admin: {
         position: 'sidebar',
       },
     },
-    slugField(),
+    slugField({
+      slugify: ({ data }) => slugify(data.title),
+    }),
   ],
   hooks: {
     afterChange: [revalidatePage],
@@ -133,4 +222,5 @@ export const Pages: CollectionConfig<'pages'> = {
     },
     maxPerDoc: 50,
   },
+  folders: true,
 }

@@ -1,30 +1,41 @@
-import type { Field, GroupField } from 'payload'
+import type { Field, GroupField, RowField } from 'payload'
 
 import deepMerge from '@/utilities/deepMerge'
+import { url } from './url'
 
 export type LinkAppearances = 'default' | 'outline'
 
-export const appearanceOptions: Record<LinkAppearances, { label: string; value: string }> = {
-  default: {
-    label: 'Default',
-    value: 'default',
-  },
-  outline: {
-    label: 'Outline',
-    value: 'outline',
-  },
-}
+// export const appearanceOptions: Record<LinkAppearances, { label: string; value: string }> = {
+//   default: {
+//     label: 'Default',
+//     value: 'default',
+//   },
+//   outline: {
+//     label: 'Outline',
+//     value: 'outline',
+//   },
+// }
 
 type LinkType = (options?: {
-  appearances?: LinkAppearances[] | false
+  // appearances?: LinkAppearances[] | false
+  offable?: boolean
   disableLabel?: boolean
+  defaultLabel?: string
+  defaultNewTab?: boolean
   overrides?: Partial<GroupField>
 }) => Field
 
-export const link: LinkType = ({ appearances, disableLabel = false, overrides = {} } = {}) => {
+export const link: LinkType = ({
+  offable = false,
+  disableLabel = false,
+  defaultLabel,
+  defaultNewTab = false,
+  overrides = {},
+} = {}) => {
   const linkResult: GroupField = {
     name: 'link',
     type: 'group',
+    label: 'Ссылка',
     admin: {
       hideGutter: true,
     },
@@ -35,105 +46,137 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
           {
             name: 'type',
             type: 'radio',
+            label: false,
             admin: {
               layout: 'horizontal',
-              width: '50%',
+              width: '75%',
             },
-            defaultValue: 'reference',
+            defaultValue: offable ? 'off' : 'reference',
+            required: true,
             options: [
+              offable && {
+                label: 'Выкл',
+                value: 'off',
+              },
               {
-                label: 'Internal link',
+                label: 'Внутренняя ссылка',
                 value: 'reference',
               },
               {
-                label: 'Custom URL',
+                label: 'Документ',
+                value: 'document',
+              },
+              {
+                label: 'Внешний URL',
                 value: 'custom',
               },
-            ],
+            ].filter((opt) => !!opt),
           },
           {
             name: 'newTab',
             type: 'checkbox',
+            label: 'В новой вкладке',
+            defaultValue: defaultNewTab,
             admin: {
-              style: {
-                alignSelf: 'flex-end',
-              },
-              width: '50%',
+              condition: (_, { type } = {}) => type !== 'off',
+              // style: { alignSelf: 'flex-end' },
+              width: '25%',
             },
-            label: 'Open in new tab',
           },
         ],
       },
     ],
   }
 
-  const linkTypes: Field[] = [
-    {
-      name: 'reference',
-      type: 'relationship',
-      admin: {
-        condition: (_, siblingData) => siblingData?.type === 'reference',
+  const linkTypesRow: RowField = {
+    type: 'row',
+    fields: [
+      {
+        name: 'reference',
+        type: 'relationship',
+        label: 'Страница',
+        relationTo: ['pages'],
+        admin: {
+          condition: (_, siblingData) => siblingData?.type === 'reference',
+          width: '35%',
+        },
+        required: true,
       },
-      label: 'Document to link to',
-      relationTo: ['pages', 'posts'],
-      required: true,
-    },
-    {
-      name: 'url',
-      type: 'text',
-      admin: {
-        condition: (_, siblingData) => siblingData?.type === 'custom',
+      {
+        name: 'document',
+        type: 'relationship',
+        label: 'Документ',
+        relationTo: 'documents',
+        admin: {
+          condition: (_, siblingData) => siblingData?.type === 'document',
+          appearance: 'drawer',
+          width: '50%',
+          style: { maxWidth: '48%' },
+        },
+        required: true,
       },
-      label: 'Custom URL',
-      required: true,
-    },
-  ]
-
-  if (!disableLabel) {
-    linkTypes.map((linkType) => ({
-      ...linkType,
-      admin: {
-        ...linkType.admin,
-        width: '50%',
-      },
-    }))
-
-    linkResult.fields.push({
-      type: 'row',
-      fields: [
-        ...linkTypes,
-        {
-          name: 'label',
-          type: 'text',
+      url({
+        overrides: {
           admin: {
-            width: '50%',
+            condition: (_, siblingData) => siblingData?.type === 'custom',
+            width: '35%',
           },
-          label: 'Label',
           required: true,
         },
-      ],
-    })
-  } else {
-    linkResult.fields = [...linkResult.fields, ...linkTypes]
-  }
-
-  if (appearances !== false) {
-    let appearanceOptionsToUse = [appearanceOptions.default, appearanceOptions.outline]
-
-    if (appearances) {
-      appearanceOptionsToUse = appearances.map((appearance) => appearanceOptions[appearance])
-    }
-
-    linkResult.fields.push({
-      name: 'appearance',
-      type: 'select',
-      admin: {
-        description: 'Choose how the link should be rendered.',
+      }),
+      {
+        name: 'anchor',
+        type: 'text',
+        label: 'Якорь',
+        admin: {
+          condition: (_, siblingData) => !['off', 'document'].includes(siblingData?.type),
+          placeholder: 'ID HTML-объекта',
+          width: '15%',
+        },
       },
-      defaultValue: 'default',
-      options: appearanceOptionsToUse,
-    })
+      {
+        name: 'label',
+        type: 'text',
+        label: 'Текст',
+        defaultValue: defaultLabel,
+        admin: {
+          condition: (_, siblingData) => siblingData?.type !== 'off',
+          width: '50%',
+        },
+        required: true,
+      },
+    ],
   }
+
+  if (disableLabel) {
+    // remove the label field
+    linkTypesRow.fields.pop()
+    // change the widths of fields to be proper...
+    linkTypesRow.fields.map((f) =>
+      // @ts-expect-error doesn't see `name` in fields
+      f.name === 'anchor' ? (f.admin.width = '30%') : delete f.admin?.width,
+    )
+  }
+
+  linkResult.fields.push(linkTypesRow)
+
+  // if (appearances !== false) {
+  //   let appearanceOptionsToUse = [appearanceOptions.default, appearanceOptions.outline]
+
+  //   if (appearances) {
+  //     appearanceOptionsToUse = appearances.map((appearance) => appearanceOptions[appearance])
+  //   }
+
+  //   linkResult.fields.push({
+  //     name: 'appearance',
+  //     type: 'select',
+  //     admin: {
+  //       description: 'Choose how the link should be rendered.',
+  //     },
+  //     defaultValue: 'default',
+  //     options: appearanceOptionsToUse,
+  //   })
+  // }
 
   return deepMerge(linkResult, overrides)
 }

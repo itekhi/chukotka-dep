@@ -7,9 +7,8 @@ export interface Props {
   alt?: string
   className?: string
   fill?: boolean // for NextImage only
-  htmlElement?: ElementType | null
-  pictureClassName?: string
-  imgClassName?: string
+  wrapperElement?: ElementType | null
+  wrapperClassName?: string
   onClick?: () => void
   onLoad?: () => void
   loading?: 'lazy' | 'eager' // for NextImage only
@@ -19,4 +18,6 @@ export interface Props {
   size?: string // for NextImage only
   src?: StaticImageData // for static media
   videoClassName?: string
+  imgClassName?: string
+  style?: React.CSSProperties | object
 }

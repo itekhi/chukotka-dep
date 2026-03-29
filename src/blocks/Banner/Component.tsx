@@ -1,26 +1,27 @@
-import type { BannerBlock as BannerBlockProps } from 'src/payload-types'
+import { BannerBlock as BannerProps } from '@/payload-types'
 
-import { cn } from '@/utilities/ui'
-import React from 'react'
+import BlockContainer from '../BlockContainer'
 import RichText from '@/components/RichText'
+import { ImageMedia } from '@/components/Media'
 
-type Props = {
-  className?: string
-} & BannerBlockProps
+export const BannerBlock = (props: BannerProps) => {
+  const { title, richText, image, titleAsH2 } = props
+  const TitleComp = titleAsH2 ? 'h2' : 'p'
 
-export const BannerBlock: React.FC<Props> = ({ className, content, style }) => {
   return (
-    <div className={cn('mx-auto my-8 w-full', className)}>
-      <div
-        className={cn('border py-3 px-6 flex items-center rounded', {
-          'border-border bg-card': style === 'info',
-          'border-error bg-error/30': style === 'error',
-          'border-success bg-success/30': style === 'success',
-          'border-warning bg-warning/30': style === 'warning',
-        })}
-      >
-        <RichText data={content} enableGutter={false} enableProse={false} />
+    <BlockContainer idFrom={title}>
+      <div className="flex flex-col lg:flex-row gap-5 min-h-86 bg-gray-light rounded-4xl relative p-6 sm:p-8">
+        <div className="flex flex-col gap-11">
+          {title && <TitleComp className="h-3xl subline">{title}</TitleComp>}
+
+          <RichText data={richText} className="w-full lg:max-w-140 xl:max-w-2xl" />
+        </div>
+
+        <ImageMedia
+          resource={image}
+          className="self-center lg:max-h-64 xl:max-h-none w-full lg:w-auto h-auto lg:h-full lg:absolute bottom-0 right-0 -mb-6 sm:-mb-8 lg:mb-0"
+        />
       </div>
-    </div>
+    </BlockContainer>
   )
 }

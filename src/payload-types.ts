@@ -7,6 +7,18 @@
  */
 
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Contacts".
+ */
+export type Contacts =
+  | {
+      type: 'phone' | 'email';
+      url?: string | null;
+      value: string;
+      id?: string | null;
+    }[]
+  | null;
+/**
  * Supported timezones in IANA format.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -68,14 +80,12 @@ export interface Config {
   blocks: {};
   collections: {
     pages: Page;
-    posts: Post;
+    news: News;
+    documents: Document;
+    documentCategories: DocumentCategory;
     media: Media;
-    categories: Category;
     users: User;
     redirects: Redirect;
-    forms: Form;
-    'form-submissions': FormSubmission;
-    search: Search;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-folders': FolderInterface;
@@ -85,19 +95,17 @@ export interface Config {
   };
   collectionsJoins: {
     'payload-folders': {
-      documentsAndFolders: 'payload-folders' | 'media';
+      documentsAndFolders: 'payload-folders' | 'pages' | 'media';
     };
   };
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
-    posts: PostsSelect<false> | PostsSelect<true>;
+    news: NewsSelect<false> | NewsSelect<true>;
+    documents: DocumentsSelect<false> | DocumentsSelect<true>;
+    documentCategories: DocumentCategoriesSelect<false> | DocumentCategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
-    forms: FormsSelect<false> | FormsSelect<true>;
-    'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
-    search: SearchSelect<false> | SearchSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-folders': PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
@@ -118,6 +126,9 @@ export interface Config {
     footer: FooterSelect<false> | FooterSelect<true>;
   };
   locale: null;
+  widgets: {
+    collections: CollectionsWidget;
+  };
   user: User;
   jobs: {
     tasks: {
@@ -155,54 +166,43 @@ export interface UserAuthOperations {
 export interface Page {
   id: string;
   title: string;
-  hero: {
-    type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
-    richText?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
-    links?:
-      | {
-          link: {
-            type?: ('reference' | 'custom') | null;
-            newTab?: boolean | null;
-            reference?:
-              | ({
-                  relationTo: 'pages';
-                  value: string | Page;
-                } | null)
-              | ({
-                  relationTo: 'posts';
-                  value: string | Post;
-                } | null);
-            url?: string | null;
-            label: string;
-            /**
-             * Choose how the link should be rendered.
-             */
-            appearance?: ('default' | 'outline') | null;
-          };
-          id?: string | null;
-        }[]
-      | null;
-    media?: (string | null) | Media;
-  };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (
+    | HeroBannerBlock
+    | BannerBlock
+    | NavCardsBlock
+    | TeamCardsBlock
+    | OrganizationsBlock
+    | UsefulResourcesBlock
+    | DocumentsBlock
+    | NewsBlock
+    | BigTilesBlock
+    | TwoPanelsWithTilesBlock
+    | ListPanelsBlock
+    | ListPanelWithBannerBlock
+    | ListPanelWith2TilesBlock
+    | PanelsRowsAndListBlock
+    | TabberBannerBlock
+    | TilesGridBlock
+    | CollapsibleBlocksBlock
+    | BannersGridBlock
+    | ContactInfoBlock
+    | InfoTilesBlock
+    | MediaCardsBlock
+    | ContentTilesBlock
+    | InfoTileWithSliderBlock
+    | TabbedTilesGridBlock
+    | InfoCardsBlock
+    | InformationBlock
+    | LinkCardsGridBlock
+    | AllDocumentsBlock
+    | HeadingBlock
+  )[];
   meta?: {
     title?: string | null;
     /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     * Загрузите изображение для предпросмотра ссылки в соцсетях (Open Graph).
+     * Рекомендуемый размер: 1200 × 630 пикселей.
+     * Соотношение сторон: 1.91:1. Формат: JPG/PNG/WebP. Вес до 2 МБ.
      */
     image?: (string | null) | Media;
     description?: string | null;
@@ -213,59 +213,23 @@ export interface Page {
    */
   generateSlug?: boolean | null;
   slug: string;
+  folder?: (string | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts".
+ * via the `definition` "HeroBannerBlock".
  */
-export interface Post {
-  id: string;
-  title: string;
-  heroImage?: (string | null) | Media;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  relatedPosts?: (string | Post)[] | null;
-  categories?: (string | Category)[] | null;
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (string | null) | Media;
-    description?: string | null;
-  };
-  publishedAt?: string | null;
-  authors?: (string | User)[] | null;
-  populatedAuthors?:
-    | {
-        id?: string | null;
-        name?: string | null;
-      }[]
-    | null;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
+export interface HeroBannerBlock {
+  image: string | Media;
+  title?: string | null;
+  description?: string | null;
+  titleAsH1?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'heroBanner';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -274,21 +238,6 @@ export interface Post {
 export interface Media {
   id: string;
   alt?: string | null;
-  caption?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
   folder?: (string | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
@@ -303,46 +252,6 @@ export interface Media {
   focalY?: number | null;
   sizes?: {
     thumbnail?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    square?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    small?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    medium?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    large?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    xlarge?: {
       url?: string | null;
       width?: number | null;
       height?: number | null;
@@ -375,6 +284,10 @@ export interface FolderInterface {
           value: string | FolderInterface;
         }
       | {
+          relationTo?: 'pages';
+          value: string | Page;
+        }
+      | {
           relationTo?: 'media';
           value: string | Media;
         }
@@ -382,33 +295,1343 @@ export interface FolderInterface {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
-  folderType?: 'media'[] | null;
+  folderType?: ('pages' | 'media')[] | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories".
+ * via the `definition` "BannerBlock".
  */
-export interface Category {
+export interface BannerBlock {
+  title?: string | null;
+  titleAsH2?: boolean | null;
+  /**
+   * Текст имеет ограничение по ширине.
+   */
+  richText: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Изображение вмещается в высоту баннера, и смещается к правому углу.
+   */
+  image?: (string | null) | Media;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'banner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NavCardsBlock".
+ */
+export interface NavCardsBlock {
+  blockTitle?: string | null;
+  cards: {
+    link: {
+      type: 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+    };
+    title: string;
+    subtitle?: string | null;
+    description: string;
+    /**
+     * Изображение вмещается в ширину карточки и смещается вниз
+     */
+    image?: (string | null) | Media;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'navCards';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documents".
+ */
+export interface Document {
   id: string;
   title: string;
+  category: string | DocumentCategory;
+  hideOnDocumentsPage?: boolean | null;
   /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   * По-умолчанию ставится сегодняшняя дата
    */
-  generateSlug?: boolean | null;
-  slug: string;
-  parent?: (string | null) | Category;
-  breadcrumbs?:
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documentCategories".
+ */
+export interface DocumentCategory {
+  id: string;
+  title: string;
+  hideOnDocumentsPage?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TeamCardsBlock".
+ */
+export interface TeamCardsBlock {
+  blockTitle?: string | null;
+  cards?:
     | {
-        doc?: (string | null) | Category;
-        url?: string | null;
-        label?: string | null;
+        photo: string | Media;
+        fullName: string;
+        description: string;
+        contacts?: Contacts;
         id?: string | null;
       }[]
     | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'teamCards';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "OrganizationsBlock".
+ */
+export interface OrganizationsBlock {
+  blockTitle?: string | null;
+  organizations?:
+    | {
+        title: string;
+        description: string;
+        /**
+         * Изображение вмещается в ширину карточки и смещается вниз
+         */
+        logo: string | Media;
+        link: {
+          type: 'reference' | 'document' | 'custom';
+          newTab?: boolean | null;
+          reference?: {
+            relationTo: 'pages';
+            value: string | Page;
+          } | null;
+          document?: (string | null) | Document;
+          url?: string | null;
+          anchor?: string | null;
+        };
+        contacts?: Contacts;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'organizations';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "UsefulResourcesBlock".
+ */
+export interface UsefulResourcesBlock {
+  blockTitle?: string | null;
+  banner: {
+    image: string | Media;
+    title: string;
+    /**
+     * Перенос строки работает только для десктоп. Чтобы перенести текст на новую строку зажмите Shift и нажмите Enter.
+     */
+    richText?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    link: {
+      type: 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+      label?: string | null;
+    };
+  };
+  resources: {
+    text: string;
+    link: {
+      type: 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+    };
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'usefulResources';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DocumentsBlock".
+ */
+export interface DocumentsBlock {
+  blockTitle?: string | null;
+  mode: 'specific' | 'category';
+  specificDocuments?: (string | Document)[] | null;
+  category?: (string | null) | DocumentCategory;
+  blockLink: {
+    type: 'off' | 'reference' | 'document' | 'custom';
+    newTab?: boolean | null;
+    reference?: {
+      relationTo: 'pages';
+      value: string | Page;
+    } | null;
+    document?: (string | null) | Document;
+    url?: string | null;
+    anchor?: string | null;
+    label?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'documents';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NewsBlock".
+ */
+export interface NewsBlock {
+  blockTitle?: string | null;
+  mode?: ('all' | 'specific') | null;
+  specificNews?: (string | News)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'news';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news".
+ */
+export interface News {
+  id: string;
+  title: string;
+  shortDescription?: string | null;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  publishedAt?: string | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BigTilesBlock".
+ */
+export interface BigTilesBlock {
+  blockTitle?: string | null;
+  tiles?:
+    | {
+        background: 'gray' | 'tint' | 'gradient';
+        /**
+         * Перенос строк работает только для десктоп. Чтобы перенести текст на новую строку, зажмите Shift и нажмите Enter.
+         */
+        richText: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        textColor: 'black' | 'darkblue';
+        image?: (string | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'bigTiles';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TwoPanelsWithTilesBlock".
+ */
+export interface TwoPanelsWithTilesBlock {
+  blockTitle?: string | null;
+  collapsible?: boolean | null;
+  panel1: {
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    image: string | Media;
+  };
+  panel2: {
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    image: string | Media;
+  };
+  tilesTitle?: string | null;
+  tiles?:
+    | {
+        icon: string | Media;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'twoPanelsWithTiles';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ListPanelsBlock".
+ */
+export interface ListPanelsBlock {
+  blockTitle?: string | null;
+  firstPanel?: {
+    title?: string | null;
+    subtitle?: string | null;
+    withNumbering?: boolean | null;
+    rows?:
+      | {
+          icon?: (string | null) | Media;
+          title?: string | null;
+          /**
+           * Перенос текста работает только для десктоп.
+           */
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  secondPanel?: {
+    title?: string | null;
+    subtitle?: string | null;
+    withNumbering?: boolean | null;
+    rows?:
+      | {
+          icon?: (string | null) | Media;
+          title?: string | null;
+          /**
+           * Перенос текста работает только для десктоп.
+           */
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'listPanels';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ListPanelWithBannerBlock".
+ */
+export interface ListPanelWithBannerBlock {
+  blockTitle?: string | null;
+  swapped?: boolean | null;
+  listPanel?: {
+    title?: string | null;
+    subtitle?: string | null;
+    withNumbering?: boolean | null;
+    rows?:
+      | {
+          icon?: (string | null) | Media;
+          title?: string | null;
+          /**
+           * Перенос текста работает только для десктоп.
+           */
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  banner: {
+    withGradient?: boolean | null;
+    text: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    /**
+     * Рекомендуется использовать изображение обрезанное по краям объекта, с соотношением сторон (Ш:В): 1:1 или 1.2:1
+     */
+    image?: (string | null) | Media;
+    imagePlacement: 'onRight' | 'centeredBelowText';
+    link: {
+      type: 'off' | 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+      label?: string | null;
+    };
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'listPanelWithBanner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ListPanelWith2TilesBlock".
+ */
+export interface ListPanelWith2TilesBlock {
+  blockTitle?: string | null;
+  swapped?: boolean | null;
+  listPanel?: {
+    title?: string | null;
+    subtitle?: string | null;
+    withNumbering?: boolean | null;
+    rows?:
+      | {
+          icon?: (string | null) | Media;
+          title?: string | null;
+          /**
+           * Перенос текста работает только для десктоп.
+           */
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  tile1: {
+    title?: string | null;
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    textColor: 'black' | 'darkblue';
+    link: {
+      type: 'off' | 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+      label?: string | null;
+    };
+    /**
+     * Рекомендуется использовать изображение обрезанное по краям объекта.
+     */
+    image?: (string | null) | Media;
+  };
+  tile2: {
+    title?: string | null;
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    textColor: 'black' | 'darkblue';
+    link: {
+      type: 'off' | 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+      label?: string | null;
+    };
+    /**
+     * Рекомендуется использовать изображение обрезанное по краям объекта.
+     */
+    image?: (string | null) | Media;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'listPanelWith2Tiles';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PanelsRowsAndListBlock".
+ */
+export interface PanelsRowsAndListBlock {
+  blockTitle?: string | null;
+  panelsTitle?: string | null;
+  panels: {
+    text: string;
+    image: string | Media;
+    id?: string | null;
+  }[];
+  rowsTitle?: string | null;
+  rows: {
+    bigNumber?: number | null;
+    text: string;
+    id?: string | null;
+  }[];
+  listTitle?: string | null;
+  list: {
+    icon?: (string | null) | Media;
+    title?: string | null;
+    /**
+     * Перенос текста работает только для десктоп.
+     */
+    text: string;
+    id?: string | null;
+  }[];
+  enableSpecialRow?: boolean | null;
+  specialRow?: {
+    icon?: (string | null) | Media;
+    text: string;
+    withGradient?: boolean | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'panelsRowsAndList';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TabberBannerBlock".
+ */
+export interface TabberBannerBlock {
+  blockTitle?: string | null;
+  tabs: {
+    name: string;
+    withGradient?: boolean | null;
+    /**
+     * Перенос текста работает только для десктоп. Чтобы перенести на новую строку зажмите Shift и нажмите Enter.
+     */
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    textColor: 'black' | 'darkblue';
+    richTextSize: 'base' | 'medium';
+    image?: (string | null) | Media;
+    /**
+     * Изображение расположено в зависимости от режима, без отступа.
+     */
+    objectImage?: (string | null) | Media;
+    objectImagePlacement: 'squezeRight' | 'bottomCenter';
+    hideObjectImageOnMobile?: boolean | null;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tabbedBanner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TilesGridBlock".
+ */
+export interface TilesGridBlock {
+  blockTitle?: string | null;
+  withNumbering?: boolean | null;
+  tiles: {
+    size: 'full' | 'half' | 'third';
+    text: string;
+    /**
+     * Изображение расположено справа от текста, с отступом (рекомендуется обрезать изображение по краям объекта). Изображение имеет ограничение по ширине.
+     */
+    image?: (string | null) | Media;
+    imageAlignY: 'top' | 'center' | 'bottom';
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tilesGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CollapsibleBlocksBlock".
+ */
+export interface CollapsibleBlocksBlock {
+  blockTitle?: string | null;
+  blockLink: {
+    type: 'off' | 'reference' | 'document' | 'custom';
+    newTab?: boolean | null;
+    reference?: {
+      relationTo: 'pages';
+      value: string | Page;
+    } | null;
+    document?: (string | null) | Document;
+    url?: string | null;
+    anchor?: string | null;
+    label?: string | null;
+  };
+  sections: {
+    title: string;
+    subtitle?: string | null;
+    titleSize: 'normal' | 'large';
+    block: (
+      | CollapsibleBlocksContentBlock
+      | CollapsibleBlocksSubSectionsBlock
+      | CollapsibleBlocksNewsCardsBlock
+      | CollapsibleBlocksBannerBlock
+      | CollapsibleBlocksInfoCardsBlock
+      | CollapsibleBlocksBannersGridBlock
+    )[];
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'collapsibleBlocks';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CollapsibleBlocksContentBlock".
+ */
+export interface CollapsibleBlocksContentBlock {
+  richText: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  link: {
+    type: 'off' | 'reference' | 'document' | 'custom';
+    newTab?: boolean | null;
+    reference?: {
+      relationTo: 'pages';
+      value: string | Page;
+    } | null;
+    document?: (string | null) | Document;
+    url?: string | null;
+    anchor?: string | null;
+    label?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'content';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CollapsibleBlocksSubSectionsBlock".
+ */
+export interface CollapsibleBlocksSubSectionsBlock {
+  subSections: {
+    title: string;
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'subSections';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CollapsibleBlocksNewsCardsBlock".
+ */
+export interface CollapsibleBlocksNewsCardsBlock {
+  cards: {
+    title: string;
+    text: string;
+    publishedAt: string;
+    link: {
+      type: 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+      label?: string | null;
+    };
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'newsCards';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CollapsibleBlocksBannerBlock".
+ */
+export interface CollapsibleBlocksBannerBlock {
+  /**
+   * Перенос текста работает только для десктоп и планшет.
+   */
+  title: string;
+  bgImage: string | Media;
+  objectImage?: (string | null) | Media;
+  link: {
+    type: 'off' | 'reference' | 'document' | 'custom';
+    newTab?: boolean | null;
+    reference?: {
+      relationTo: 'pages';
+      value: string | Page;
+    } | null;
+    document?: (string | null) | Document;
+    url?: string | null;
+    anchor?: string | null;
+    label?: string | null;
+  };
+  withCountdown?: boolean | null;
+  countdown?: {
+    title?: string | null;
+    endDateTime: string;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'banner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CollapsibleBlocksInfoCardsBlock".
+ */
+export interface CollapsibleBlocksInfoCardsBlock {
+  cards: {
+    image: string | Media;
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    link: {
+      type: 'off' | 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+      label?: string | null;
+    };
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'infoCards';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CollapsibleBlocksBannersGridBlock".
+ */
+export interface CollapsibleBlocksBannersGridBlock {
+  variant: '2col' | '3col';
+  banners: {
+    title: string;
+    /**
+     * Рекомендуется использовать изображение обрезанное по краям объекта.
+     */
+    image?: (string | null) | Media;
+    withGradient?: boolean | null;
+    link: {
+      type: 'off' | 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+      label?: string | null;
+    };
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'bannersGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BannersGridBlock".
+ */
+export interface BannersGridBlock {
+  blockTitle?: string | null;
+  banners: {
+    title?: string | null;
+    /**
+     * Текст имеет ограничение по ширине когда есть "Изображение объекта", поэтому не рекомендуется переносить текст на новые строки. Перенос текста работает только для декстоп.
+     */
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    link: {
+      type: 'off' | 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+      label?: string | null;
+    };
+    bgImage?: (string | null) | Media;
+    /**
+     * Изображение расположено в правом нижнем углу, без отступа (рекомендуется обрезать изображение по краям объекта). Изображение имеет ограничение по ширине.
+     */
+    objectImage?: (string | null) | Media;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'bannersGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactInfoBlock".
+ */
+export interface ContactInfoBlock {
+  blockTitle?: string | null;
+  title: string;
+  contacts: {
+    type: 'phone' | 'email' | 'address' | 'vk' | 'telegram' | 'qr';
+    qr?: (string | null) | Media;
+    /**
+     * Для ВК и Телеграм введите только имя пользователя без @
+     */
+    value?: string | null;
+    url?: string | null;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'contactInfo';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InfoTilesBlock".
+ */
+export interface InfoTilesBlock {
+  blockTitle?: string | null;
+  tile1: {
+    title?: string | null;
+    /**
+     * Перенос текста работает только для декстоп.
+     */
+    text: string;
+    /**
+     * Для плитки №1 имеет статичную высоту и расположено по центру под текстом, для плиток №2 и №3 имеет статичную высоту и расположено по центру у правого края. Рекомендуется использовать изображение обрезанное по краям объекта.
+     */
+    image?: (string | null) | Media;
+    link: {
+      type: 'off' | 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+      label?: string | null;
+    };
+  };
+  tile2: {
+    title?: string | null;
+    /**
+     * Перенос текста работает только для декстоп.
+     */
+    text: string;
+    /**
+     * Для плитки №1 имеет статичную высоту и расположено по центру под текстом, для плиток №2 и №3 имеет статичную высоту и расположено по центру у правого края. Рекомендуется использовать изображение обрезанное по краям объекта.
+     */
+    image?: (string | null) | Media;
+    link: {
+      type: 'off' | 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+      label?: string | null;
+    };
+  };
+  tile3: {
+    title?: string | null;
+    /**
+     * Перенос текста работает только для декстоп.
+     */
+    text: string;
+    /**
+     * Для плитки №1 имеет статичную высоту и расположено по центру под текстом, для плиток №2 и №3 имеет статичную высоту и расположено по центру у правого края. Рекомендуется использовать изображение обрезанное по краям объекта.
+     */
+    image?: (string | null) | Media;
+    link: {
+      type: 'off' | 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+      label?: string | null;
+    };
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'infoTiles';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaCardsBlock".
+ */
+export interface MediaCardsBlock {
+  blockTitle?: string | null;
+  cards: {
+    title: string;
+    /**
+     * Изображение имеет статичную высоту и расположено посередине под текстом, с отступом от сторон и текста. Рекомендуется использовать изображение обрезанное по краям объекта.
+     */
+    image: string | Media;
+    link: {
+      type: 'off' | 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+    };
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mediaCards';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContentTilesBlock".
+ */
+export interface ContentTilesBlock {
+  blockTitle?: string | null;
+  tiles: {
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    /**
+     * Изображение имеет ограничение по высоте, размещается по центру справа от текста, с отступом (рекомендуется использовать изображение обрезанное по краям объекта).
+     */
+    image?: (string | null) | Media;
+    withGradient?: boolean | null;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'contentTiles';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InfoTileWithSliderBlock".
+ */
+export interface InfoTileWithSliderBlock {
+  blockTitle?: string | null;
+  infoTile: {
+    title: string;
+    text?: string | null;
+    link: {
+      type: 'off' | 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+      label?: string | null;
+    };
+  };
+  slides: {
+    title?: string | null;
+    text: string;
+    link: {
+      type: 'off' | 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+      label?: string | null;
+    };
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'infoTileWithSlider';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TabbedTilesGridBlock".
+ */
+export interface TabbedTilesGridBlock {
+  blockTitle?: string | null;
+  tabs: {
+    tabName: string;
+    withNumbering?: boolean | null;
+    tiles: {
+      text: string;
+      image?: (string | null) | Media;
+      id?: string | null;
+    }[];
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tabbedTilesGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InfoCardsBlock".
+ */
+export interface InfoCardsBlock {
+  blockTitle?: string | null;
+  cards: {
+    title: string;
+    text?: string | null;
+    link: {
+      type: 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+      label?: string | null;
+    };
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'infoCards';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InformationBlock".
+ */
+export interface InformationBlock {
+  blockTitle?: string | null;
+  textTile: {
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  numberTiles: {
+    title?: string | null;
+    tile1number?: number | null;
+    tile1text: string;
+    tile2number?: number | null;
+    tile2text: string;
+    tile3number?: number | null;
+    tile3text: string;
+  };
+  iconTiles: {
+    title?: string | null;
+    tiles: {
+      text: string;
+      /**
+       * Рекомендуется использовать изображения одинаковой ширины и высоты, с пространством до краев.
+       */
+      icon: string | Media;
+      id?: string | null;
+    }[];
+  };
+  banner: {
+    withGradient?: boolean | null;
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    /**
+     * Изображение расположено справа и смещено к правому углу, с отступом (рекомендуется использовать изображение обрезанное по краям объекта).
+     */
+    image?: (string | null) | Media;
+    link: {
+      type: 'off' | 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+      label?: string | null;
+    };
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'information';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LinkCardsGridBlock".
+ */
+export interface LinkCardsGridBlock {
+  blockTitle?: string | null;
+  introCard?: {
+    enabled?: boolean | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  cards: {
+    title: string;
+    text?: string | null;
+    subtext?: string | null;
+    link: {
+      type: 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+      label?: string | null;
+    };
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'linkCardsGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AllDocumentsBlock".
+ */
+export interface AllDocumentsBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'allDocuments';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeadingBlock".
+ */
+export interface HeadingBlock {
+  title?: string | null;
+  hidden?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'heading';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -438,348 +1661,6 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CallToActionBlock".
- */
-export interface CallToActionBlock {
-  richText?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  links?:
-    | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: string | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: string | Post;
-              } | null);
-          url?: string | null;
-          label: string;
-          /**
-           * Choose how the link should be rendered.
-           */
-          appearance?: ('default' | 'outline') | null;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'cta';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ContentBlock".
- */
-export interface ContentBlock {
-  columns?:
-    | {
-        size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
-        richText?: {
-          root: {
-            type: string;
-            children: {
-              type: any;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        enableLink?: boolean | null;
-        link?: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: string | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: string | Post;
-              } | null);
-          url?: string | null;
-          label: string;
-          /**
-           * Choose how the link should be rendered.
-           */
-          appearance?: ('default' | 'outline') | null;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'content';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MediaBlock".
- */
-export interface MediaBlock {
-  media: string | Media;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'mediaBlock';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArchiveBlock".
- */
-export interface ArchiveBlock {
-  introContent?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  populateBy?: ('collection' | 'selection') | null;
-  relationTo?: 'posts' | null;
-  categories?: (string | Category)[] | null;
-  limit?: number | null;
-  selectedDocs?:
-    | {
-        relationTo: 'posts';
-        value: string | Post;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'archive';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FormBlock".
- */
-export interface FormBlock {
-  form: string | Form;
-  enableIntro?: boolean | null;
-  introContent?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'formBlock';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "forms".
- */
-export interface Form {
-  id: string;
-  title: string;
-  fields?:
-    | (
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            required?: boolean | null;
-            defaultValue?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'checkbox';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'country';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'email';
-          }
-        | {
-            message?: {
-              root: {
-                type: string;
-                children: {
-                  type: any;
-                  version: number;
-                  [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                version: number;
-              };
-              [k: string]: unknown;
-            } | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'message';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            defaultValue?: number | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'number';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            defaultValue?: string | null;
-            placeholder?: string | null;
-            options?:
-              | {
-                  label: string;
-                  value: string;
-                  id?: string | null;
-                }[]
-              | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'select';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'state';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            defaultValue?: string | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'text';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            defaultValue?: string | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'textarea';
-          }
-      )[]
-    | null;
-  submitButtonLabel?: string | null;
-  /**
-   * Choose whether to display an on-page message or redirect to a different page after they submit the form.
-   */
-  confirmationType?: ('message' | 'redirect') | null;
-  confirmationMessage?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  redirect?: {
-    url: string;
-  };
-  /**
-   * Send custom emails when the form submits. Use comma separated lists to send the same email to multiple recipients. To reference a value from this form, wrap that field's name with double curly brackets, i.e. {{firstName}}. You can use a wildcard {{*}} to output all data and {{*:table}} to format it as an HTML table in the email.
-   */
-  emails?:
-    | {
-        emailTo?: string | null;
-        cc?: string | null;
-        bcc?: string | null;
-        replyTo?: string | null;
-        emailFrom?: string | null;
-        subject: string;
-        /**
-         * Enter the message that should be sent in this email.
-         */
-        message?: {
-          root: {
-            type: string;
-            children: {
-              type: any;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -790,65 +1671,12 @@ export interface Redirect {
   from: string;
   to?: {
     type?: ('reference' | 'custom') | null;
-    reference?:
-      | ({
-          relationTo: 'pages';
-          value: string | Page;
-        } | null)
-      | ({
-          relationTo: 'posts';
-          value: string | Post;
-        } | null);
+    reference?: {
+      relationTo: 'pages';
+      value: string | Page;
+    } | null;
     url?: string | null;
   };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "form-submissions".
- */
-export interface FormSubmission {
-  id: string;
-  form: string | Form;
-  submissionData?:
-    | {
-        field: string;
-        value: string;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "search".
- */
-export interface Search {
-  id: string;
-  title?: string | null;
-  priority?: number | null;
-  doc: {
-    relationTo: 'posts';
-    value: string | Post;
-  };
-  slug?: string | null;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    image?: (string | null) | Media;
-  };
-  categories?:
-    | {
-        relationTo?: string | null;
-        categoryID?: string | null;
-        title?: string | null;
-        id?: string | null;
-      }[]
-    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -973,16 +1801,20 @@ export interface PayloadLockedDocument {
         value: string | Page;
       } | null)
     | ({
-        relationTo: 'posts';
-        value: string | Post;
+        relationTo: 'news';
+        value: string | News;
+      } | null)
+    | ({
+        relationTo: 'documents';
+        value: string | Document;
+      } | null)
+    | ({
+        relationTo: 'documentCategories';
+        value: string | DocumentCategory;
       } | null)
     | ({
         relationTo: 'media';
         value: string | Media;
-      } | null)
-    | ({
-        relationTo: 'categories';
-        value: string | Category;
       } | null)
     | ({
         relationTo: 'users';
@@ -991,18 +1823,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'redirects';
         value: string | Redirect;
-      } | null)
-    | ({
-        relationTo: 'forms';
-        value: string | Form;
-      } | null)
-    | ({
-        relationTo: 'form-submissions';
-        value: string | FormSubmission;
-      } | null)
-    | ({
-        relationTo: 'search';
-        value: string | Search;
       } | null)
     | ({
         relationTo: 'payload-folders';
@@ -1056,36 +1876,38 @@ export interface PayloadMigration {
  */
 export interface PagesSelect<T extends boolean = true> {
   title?: T;
-  hero?:
-    | T
-    | {
-        type?: T;
-        richText?: T;
-        links?:
-          | T
-          | {
-              link?:
-                | T
-                | {
-                    type?: T;
-                    newTab?: T;
-                    reference?: T;
-                    url?: T;
-                    label?: T;
-                    appearance?: T;
-                  };
-              id?: T;
-            };
-        media?: T;
-      };
   layout?:
     | T
     | {
-        cta?: T | CallToActionBlockSelect<T>;
-        content?: T | ContentBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
-        archive?: T | ArchiveBlockSelect<T>;
-        formBlock?: T | FormBlockSelect<T>;
+        heroBanner?: T | HeroBannerBlockSelect<T>;
+        banner?: T | BannerBlockSelect<T>;
+        navCards?: T | NavCardsBlockSelect<T>;
+        teamCards?: T | TeamCardsBlockSelect<T>;
+        organizations?: T | OrganizationsBlockSelect<T>;
+        usefulResources?: T | UsefulResourcesBlockSelect<T>;
+        documents?: T | DocumentsBlockSelect<T>;
+        news?: T | NewsBlockSelect<T>;
+        bigTiles?: T | BigTilesBlockSelect<T>;
+        twoPanelsWithTiles?: T | TwoPanelsWithTilesBlockSelect<T>;
+        listPanels?: T | ListPanelsBlockSelect<T>;
+        listPanelWithBanner?: T | ListPanelWithBannerBlockSelect<T>;
+        listPanelWith2Tiles?: T | ListPanelWith2TilesBlockSelect<T>;
+        panelsRowsAndList?: T | PanelsRowsAndListBlockSelect<T>;
+        tabbedBanner?: T | TabberBannerBlockSelect<T>;
+        tilesGrid?: T | TilesGridBlockSelect<T>;
+        collapsibleBlocks?: T | CollapsibleBlocksBlockSelect<T>;
+        bannersGrid?: T | BannersGridBlockSelect<T>;
+        contactInfo?: T | ContactInfoBlockSelect<T>;
+        infoTiles?: T | InfoTilesBlockSelect<T>;
+        mediaCards?: T | MediaCardsBlockSelect<T>;
+        contentTiles?: T | ContentTilesBlockSelect<T>;
+        infoTileWithSlider?: T | InfoTileWithSliderBlockSelect<T>;
+        tabbedTilesGrid?: T | TabbedTilesGridBlockSelect<T>;
+        infoCards?: T | InfoCardsBlockSelect<T>;
+        information?: T | InformationBlockSelect<T>;
+        linkCardsGrid?: T | LinkCardsGridBlockSelect<T>;
+        allDocuments?: T | AllDocumentsBlockSelect<T>;
+        heading?: T | HeadingBlockSelect<T>;
       };
   meta?:
     | T
@@ -1097,17 +1919,42 @@ export interface PagesSelect<T extends boolean = true> {
   publishedAt?: T;
   generateSlug?: T;
   slug?: T;
+  folder?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CallToActionBlock_select".
+ * via the `definition` "HeroBannerBlock_select".
  */
-export interface CallToActionBlockSelect<T extends boolean = true> {
+export interface HeroBannerBlockSelect<T extends boolean = true> {
+  image?: T;
+  title?: T;
+  description?: T;
+  titleAsH1?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BannerBlock_select".
+ */
+export interface BannerBlockSelect<T extends boolean = true> {
+  title?: T;
+  titleAsH2?: T;
   richText?: T;
-  links?:
+  image?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NavCardsBlock_select".
+ */
+export interface NavCardsBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  cards?:
     | T
     | {
         link?:
@@ -1116,9 +1963,112 @@ export interface CallToActionBlockSelect<T extends boolean = true> {
               type?: T;
               newTab?: T;
               reference?: T;
+              document?: T;
               url?: T;
+              anchor?: T;
+            };
+        title?: T;
+        subtitle?: T;
+        description?: T;
+        image?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TeamCardsBlock_select".
+ */
+export interface TeamCardsBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  cards?:
+    | T
+    | {
+        photo?: T;
+        fullName?: T;
+        description?: T;
+        contacts?: T | ContactsSelect<T>;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Contacts_select".
+ */
+export interface ContactsSelect<T extends boolean = true> {
+  type?: T;
+  url?: T;
+  value?: T;
+  id?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "OrganizationsBlock_select".
+ */
+export interface OrganizationsBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  organizations?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        logo?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+            };
+        contacts?: T | ContactsSelect<T>;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "UsefulResourcesBlock_select".
+ */
+export interface UsefulResourcesBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  banner?:
+    | T
+    | {
+        image?: T;
+        title?: T;
+        richText?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
               label?: T;
-              appearance?: T;
+            };
+      };
+  resources?:
+    | T
+    | {
+        text?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
             };
         id?: T;
       };
@@ -1127,24 +2077,348 @@ export interface CallToActionBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ContentBlock_select".
+ * via the `definition` "DocumentsBlock_select".
  */
-export interface ContentBlockSelect<T extends boolean = true> {
-  columns?:
+export interface DocumentsBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  mode?: T;
+  specificDocuments?: T;
+  category?: T;
+  blockLink?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        document?: T;
+        url?: T;
+        anchor?: T;
+        label?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NewsBlock_select".
+ */
+export interface NewsBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  mode?: T;
+  specificNews?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BigTilesBlock_select".
+ */
+export interface BigTilesBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  tiles?:
+    | T
+    | {
+        background?: T;
+        richText?: T;
+        textColor?: T;
+        image?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TwoPanelsWithTilesBlock_select".
+ */
+export interface TwoPanelsWithTilesBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  collapsible?: T;
+  panel1?:
+    | T
+    | {
+        richText?: T;
+        image?: T;
+      };
+  panel2?:
+    | T
+    | {
+        richText?: T;
+        image?: T;
+      };
+  tilesTitle?: T;
+  tiles?:
+    | T
+    | {
+        icon?: T;
+        text?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ListPanelsBlock_select".
+ */
+export interface ListPanelsBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  firstPanel?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        withNumbering?: T;
+        rows?:
+          | T
+          | {
+              icon?: T;
+              title?: T;
+              text?: T;
+              id?: T;
+            };
+      };
+  secondPanel?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        withNumbering?: T;
+        rows?:
+          | T
+          | {
+              icon?: T;
+              title?: T;
+              text?: T;
+              id?: T;
+            };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ListPanelWithBannerBlock_select".
+ */
+export interface ListPanelWithBannerBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  swapped?: T;
+  listPanel?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        withNumbering?: T;
+        rows?:
+          | T
+          | {
+              icon?: T;
+              title?: T;
+              text?: T;
+              id?: T;
+            };
+      };
+  banner?:
+    | T
+    | {
+        withGradient?: T;
+        text?: T;
+        image?: T;
+        imagePlacement?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+              label?: T;
+            };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ListPanelWith2TilesBlock_select".
+ */
+export interface ListPanelWith2TilesBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  swapped?: T;
+  listPanel?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        withNumbering?: T;
+        rows?:
+          | T
+          | {
+              icon?: T;
+              title?: T;
+              text?: T;
+              id?: T;
+            };
+      };
+  tile1?:
+    | T
+    | {
+        title?: T;
+        richText?: T;
+        textColor?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+              label?: T;
+            };
+        image?: T;
+      };
+  tile2?:
+    | T
+    | {
+        title?: T;
+        richText?: T;
+        textColor?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+              label?: T;
+            };
+        image?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PanelsRowsAndListBlock_select".
+ */
+export interface PanelsRowsAndListBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  panelsTitle?: T;
+  panels?:
+    | T
+    | {
+        text?: T;
+        image?: T;
+        id?: T;
+      };
+  rowsTitle?: T;
+  rows?:
+    | T
+    | {
+        bigNumber?: T;
+        text?: T;
+        id?: T;
+      };
+  listTitle?: T;
+  list?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  enableSpecialRow?: T;
+  specialRow?:
+    | T
+    | {
+        icon?: T;
+        text?: T;
+        withGradient?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TabberBannerBlock_select".
+ */
+export interface TabberBannerBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  tabs?:
+    | T
+    | {
+        name?: T;
+        withGradient?: T;
+        richText?: T;
+        textColor?: T;
+        richTextSize?: T;
+        image?: T;
+        objectImage?: T;
+        objectImagePlacement?: T;
+        hideObjectImageOnMobile?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TilesGridBlock_select".
+ */
+export interface TilesGridBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  withNumbering?: T;
+  tiles?:
     | T
     | {
         size?: T;
-        richText?: T;
-        enableLink?: T;
-        link?:
+        text?: T;
+        image?: T;
+        imageAlignY?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CollapsibleBlocksBlock_select".
+ */
+export interface CollapsibleBlocksBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  blockLink?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        document?: T;
+        url?: T;
+        anchor?: T;
+        label?: T;
+      };
+  sections?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        titleSize?: T;
+        block?:
           | T
           | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-              appearance?: T;
+              content?: T | CollapsibleBlocksContentBlockSelect<T>;
+              subSections?: T | CollapsibleBlocksSubSectionsBlockSelect<T>;
+              newsCards?: T | CollapsibleBlocksNewsCardsBlockSelect<T>;
+              banner?: T | CollapsibleBlocksBannerBlockSelect<T>;
+              infoCards?: T | CollapsibleBlocksInfoCardsBlockSelect<T>;
+              bannersGrid?: T | CollapsibleBlocksBannersGridBlockSelect<T>;
             };
         id?: T;
       };
@@ -1153,68 +2427,548 @@ export interface ContentBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MediaBlock_select".
+ * via the `definition` "CollapsibleBlocksContentBlock_select".
  */
-export interface MediaBlockSelect<T extends boolean = true> {
-  media?: T;
+export interface CollapsibleBlocksContentBlockSelect<T extends boolean = true> {
+  richText?: T;
+  link?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        document?: T;
+        url?: T;
+        anchor?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArchiveBlock_select".
+ * via the `definition` "CollapsibleBlocksSubSectionsBlock_select".
  */
-export interface ArchiveBlockSelect<T extends boolean = true> {
-  introContent?: T;
-  populateBy?: T;
-  relationTo?: T;
-  categories?: T;
-  limit?: T;
-  selectedDocs?: T;
+export interface CollapsibleBlocksSubSectionsBlockSelect<T extends boolean = true> {
+  subSections?:
+    | T
+    | {
+        title?: T;
+        richText?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FormBlock_select".
+ * via the `definition` "CollapsibleBlocksNewsCardsBlock_select".
  */
-export interface FormBlockSelect<T extends boolean = true> {
-  form?: T;
-  enableIntro?: T;
-  introContent?: T;
+export interface CollapsibleBlocksNewsCardsBlockSelect<T extends boolean = true> {
+  cards?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        publishedAt?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+              label?: T;
+            };
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts_select".
+ * via the `definition` "CollapsibleBlocksBannerBlock_select".
  */
-export interface PostsSelect<T extends boolean = true> {
+export interface CollapsibleBlocksBannerBlockSelect<T extends boolean = true> {
   title?: T;
-  heroImage?: T;
-  content?: T;
-  relatedPosts?: T;
-  categories?: T;
-  meta?:
+  bgImage?: T;
+  objectImage?: T;
+  link?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        document?: T;
+        url?: T;
+        anchor?: T;
+        label?: T;
+      };
+  withCountdown?: T;
+  countdown?:
+    | T
+    | {
+        title?: T;
+        endDateTime?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CollapsibleBlocksInfoCardsBlock_select".
+ */
+export interface CollapsibleBlocksInfoCardsBlockSelect<T extends boolean = true> {
+  cards?:
+    | T
+    | {
+        image?: T;
+        richText?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+              label?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CollapsibleBlocksBannersGridBlock_select".
+ */
+export interface CollapsibleBlocksBannersGridBlockSelect<T extends boolean = true> {
+  variant?: T;
+  banners?:
     | T
     | {
         title?: T;
         image?: T;
-        description?: T;
+        withGradient?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+              label?: T;
+            };
+        id?: T;
       };
-  publishedAt?: T;
-  authors?: T;
-  populatedAuthors?:
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BannersGridBlock_select".
+ */
+export interface BannersGridBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  banners?:
     | T
     | {
+        title?: T;
+        richText?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+              label?: T;
+            };
+        bgImage?: T;
+        objectImage?: T;
         id?: T;
-        name?: T;
       };
-  generateSlug?: T;
-  slug?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactInfoBlock_select".
+ */
+export interface ContactInfoBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  title?: T;
+  contacts?:
+    | T
+    | {
+        type?: T;
+        qr?: T;
+        value?: T;
+        url?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InfoTilesBlock_select".
+ */
+export interface InfoTilesBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  tile1?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        image?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+              label?: T;
+            };
+      };
+  tile2?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        image?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+              label?: T;
+            };
+      };
+  tile3?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        image?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+              label?: T;
+            };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaCardsBlock_select".
+ */
+export interface MediaCardsBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  cards?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContentTilesBlock_select".
+ */
+export interface ContentTilesBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  tiles?:
+    | T
+    | {
+        richText?: T;
+        image?: T;
+        withGradient?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InfoTileWithSliderBlock_select".
+ */
+export interface InfoTileWithSliderBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  infoTile?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+              label?: T;
+            };
+      };
+  slides?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+              label?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TabbedTilesGridBlock_select".
+ */
+export interface TabbedTilesGridBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  tabs?:
+    | T
+    | {
+        tabName?: T;
+        withNumbering?: T;
+        tiles?:
+          | T
+          | {
+              text?: T;
+              image?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InfoCardsBlock_select".
+ */
+export interface InfoCardsBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  cards?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+              label?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InformationBlock_select".
+ */
+export interface InformationBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  textTile?:
+    | T
+    | {
+        richText?: T;
+      };
+  numberTiles?:
+    | T
+    | {
+        title?: T;
+        tile1number?: T;
+        tile1text?: T;
+        tile2number?: T;
+        tile2text?: T;
+        tile3number?: T;
+        tile3text?: T;
+      };
+  iconTiles?:
+    | T
+    | {
+        title?: T;
+        tiles?:
+          | T
+          | {
+              text?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
+  banner?:
+    | T
+    | {
+        withGradient?: T;
+        richText?: T;
+        image?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+              label?: T;
+            };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LinkCardsGridBlock_select".
+ */
+export interface LinkCardsGridBlockSelect<T extends boolean = true> {
+  blockTitle?: T;
+  introCard?:
+    | T
+    | {
+        enabled?: T;
+        title?: T;
+        text?: T;
+      };
+  cards?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        subtext?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+              label?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AllDocumentsBlock_select".
+ */
+export interface AllDocumentsBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeadingBlock_select".
+ */
+export interface HeadingBlockSelect<T extends boolean = true> {
+  title?: T;
+  hidden?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news_select".
+ */
+export interface NewsSelect<T extends boolean = true> {
+  title?: T;
+  shortDescription?: T;
+  content?: T;
+  publishedAt?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documents_select".
+ */
+export interface DocumentsSelect<T extends boolean = true> {
+  title?: T;
+  category?: T;
+  hideOnDocumentsPage?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documentCategories_select".
+ */
+export interface DocumentCategoriesSelect<T extends boolean = true> {
+  title?: T;
+  hideOnDocumentsPage?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1222,7 +2976,6 @@ export interface PostsSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
-  caption?: T;
   folder?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1248,56 +3001,6 @@ export interface MediaSelect<T extends boolean = true> {
               filesize?: T;
               filename?: T;
             };
-        square?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        small?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        medium?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        large?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        xlarge?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
         og?:
           | T
           | {
@@ -1309,26 +3012,6 @@ export interface MediaSelect<T extends boolean = true> {
               filename?: T;
             };
       };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories_select".
- */
-export interface CategoriesSelect<T extends boolean = true> {
-  title?: T;
-  generateSlug?: T;
-  slug?: T;
-  parent?: T;
-  breadcrumbs?:
-    | T
-    | {
-        doc?: T;
-        url?: T;
-        label?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1365,182 +3048,6 @@ export interface RedirectsSelect<T extends boolean = true> {
         type?: T;
         reference?: T;
         url?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "forms_select".
- */
-export interface FormsSelect<T extends boolean = true> {
-  title?: T;
-  fields?:
-    | T
-    | {
-        checkbox?:
-          | T
-          | {
-              name?: T;
-              label?: T;
-              width?: T;
-              required?: T;
-              defaultValue?: T;
-              id?: T;
-              blockName?: T;
-            };
-        country?:
-          | T
-          | {
-              name?: T;
-              label?: T;
-              width?: T;
-              required?: T;
-              id?: T;
-              blockName?: T;
-            };
-        email?:
-          | T
-          | {
-              name?: T;
-              label?: T;
-              width?: T;
-              required?: T;
-              id?: T;
-              blockName?: T;
-            };
-        message?:
-          | T
-          | {
-              message?: T;
-              id?: T;
-              blockName?: T;
-            };
-        number?:
-          | T
-          | {
-              name?: T;
-              label?: T;
-              width?: T;
-              defaultValue?: T;
-              required?: T;
-              id?: T;
-              blockName?: T;
-            };
-        select?:
-          | T
-          | {
-              name?: T;
-              label?: T;
-              width?: T;
-              defaultValue?: T;
-              placeholder?: T;
-              options?:
-                | T
-                | {
-                    label?: T;
-                    value?: T;
-                    id?: T;
-                  };
-              required?: T;
-              id?: T;
-              blockName?: T;
-            };
-        state?:
-          | T
-          | {
-              name?: T;
-              label?: T;
-              width?: T;
-              required?: T;
-              id?: T;
-              blockName?: T;
-            };
-        text?:
-          | T
-          | {
-              name?: T;
-              label?: T;
-              width?: T;
-              defaultValue?: T;
-              required?: T;
-              id?: T;
-              blockName?: T;
-            };
-        textarea?:
-          | T
-          | {
-              name?: T;
-              label?: T;
-              width?: T;
-              defaultValue?: T;
-              required?: T;
-              id?: T;
-              blockName?: T;
-            };
-      };
-  submitButtonLabel?: T;
-  confirmationType?: T;
-  confirmationMessage?: T;
-  redirect?:
-    | T
-    | {
-        url?: T;
-      };
-  emails?:
-    | T
-    | {
-        emailTo?: T;
-        cc?: T;
-        bcc?: T;
-        replyTo?: T;
-        emailFrom?: T;
-        subject?: T;
-        message?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "form-submissions_select".
- */
-export interface FormSubmissionsSelect<T extends boolean = true> {
-  form?: T;
-  submissionData?:
-    | T
-    | {
-        field?: T;
-        value?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "search_select".
- */
-export interface SearchSelect<T extends boolean = true> {
-  title?: T;
-  priority?: T;
-  doc?: T;
-  slug?: T;
-  meta?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        image?: T;
-      };
-  categories?:
-    | T
-    | {
-        relationTo?: T;
-        categoryID?: T;
-        title?: T;
-        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1634,22 +3141,27 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Header {
   id: string;
+  phone?: string | null;
+  socialLinks?:
+    | {
+        type: 'telegram' | 'vk';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
   navItems?:
     | {
         link: {
-          type?: ('reference' | 'custom') | null;
+          type: 'reference' | 'document' | 'custom';
           newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: string | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: string | Post;
-              } | null);
+          reference?: {
+            relationTo: 'pages';
+            value: string | Page;
+          } | null;
+          document?: (string | null) | Document;
           url?: string | null;
-          label: string;
+          anchor?: string | null;
+          label?: string | null;
         };
         id?: string | null;
       }[]
@@ -1663,26 +3175,24 @@ export interface Header {
  */
 export interface Footer {
   id: string;
-  navItems?:
-    | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: string | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: string | Post;
-              } | null);
-          url?: string | null;
-          label: string;
-        };
-        id?: string | null;
-      }[]
-    | null;
+  addressPostalCode: string;
+  addressLocality: string;
+  address: string;
+  phones: string[];
+  emails: string[];
+  openingHours: string[];
+  privacyPolicyLink: {
+    type: 'reference' | 'document' | 'custom';
+    newTab?: boolean | null;
+    reference?: {
+      relationTo: 'pages';
+      value: string | Page;
+    } | null;
+    document?: (string | null) | Document;
+    url?: string | null;
+    anchor?: string | null;
+  };
+  telegramUrl?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1691,6 +3201,14 @@ export interface Footer {
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
+  phone?: T;
+  socialLinks?:
+    | T
+    | {
+        type?: T;
+        url?: T;
+        id?: T;
+      };
   navItems?:
     | T
     | {
@@ -1700,7 +3218,9 @@ export interface HeaderSelect<T extends boolean = true> {
               type?: T;
               newTab?: T;
               reference?: T;
+              document?: T;
               url?: T;
+              anchor?: T;
               label?: T;
             };
         id?: T;
@@ -1714,23 +3234,36 @@ export interface HeaderSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
-  navItems?:
+  addressPostalCode?: T;
+  addressLocality?: T;
+  address?: T;
+  phones?: T;
+  emails?: T;
+  openingHours?: T;
+  privacyPolicyLink?:
     | T
     | {
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-            };
-        id?: T;
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        document?: T;
+        url?: T;
+        anchor?: T;
       };
+  telegramUrl?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collections_widget".
+ */
+export interface CollectionsWidget {
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'full';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1746,49 +3279,13 @@ export interface TaskSchedulePublish {
           value: string | Page;
         } | null)
       | ({
-          relationTo: 'posts';
-          value: string | Post;
+          relationTo: 'news';
+          value: string | News;
         } | null);
     global?: string | null;
     user?: (string | null) | User;
   };
   output?: unknown;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BannerBlock".
- */
-export interface BannerBlock {
-  style: 'info' | 'warning' | 'error' | 'success';
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'banner';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CodeBlock".
- */
-export interface CodeBlock {
-  language?: ('typescript' | 'javascript' | 'css') | null;
-  code: string;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'code';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

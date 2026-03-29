@@ -1,51 +1,202 @@
 @import 'tailwindcss';
-@import 'tw-animate-css';
-
 @config '../../../tailwind.config.mjs';
 
-@custom-variant dark (&:is([data-theme='dark'] *));
+@font-face {
+  font-family: 'TT Firs Neue';
+  src:
+    local('TT Firs Neue Light'),
+    local('TTFirsNeue-Light'),
+    url('/fonts/TTFirsNeue-Light.woff2') format('woff2'),
+    url('/fonts/TTFirsNeue-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TT Firs Neue';
+  src:
+    local('TT Firs Neue Regular'),
+    local('TTFirsNeue-Regular'),
+    url('/fonts/TTFirsNeue-Regular.woff2') format('woff2'),
+    url('/fonts/TTFirsNeue-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'TT Firs Neue';
+  src:
+    local('TT Firs Neue Medium'),
+    local('TTFirsNeue-Medium'),
+    url('/fonts/TTFirsNeue-Medium.woff2') format('woff2'),
+    url('/fonts/TTFirsNeue-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TT Firs Neue';
+  src:
+    local('TT Firs Neue DemiBold'),
+    local('TTFirsNeue-DemiBold'),
+    url('/fonts/TTFirsNeue-DemiBold.woff2') format('woff2'),
+    url('/fonts/TTFirsNeue-DemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*@custom-variant dark (&:is([data-theme='dark'] *));*/
 @custom-variant sm (@media (width >= theme(--breakpoint-sm)));
 @custom-variant md (@media (width >= theme(--breakpoint-md)));
 @custom-variant lg (@media (width >= theme(--breakpoint-lg)));
 @custom-variant xl (@media (width >= theme(--breakpoint-xl)));
 @custom-variant 2xl (@media (width >= theme(--breakpoint-2xl)));
 
+/*@source inline('flex-centered');*/
+
+@theme {
+  --breakpoint-sm: 40rem; /* 640px */
+  --breakpoint-md: 48rem; /* 768px */
+  --breakpoint-lg: 64rem; /* 1024px */
+  --breakpoint-xl: 80rem; /* 1280px */
+  --breakpoint-2xl: 86rem; /* 1376px */
+
+  --font-sans: 'TT Firs Neue', 'Arial', sans-serif;
+  --text-h-large: 2.5rem; /* 40px */
+  --text-h-large--line-height: 1.15;
+}
+
+:root {
+  /*--success: oklch(78% 0.08 200deg);
+  --warning: oklch(89% 0.1 75deg);
+  --error: oklch(75% 0.15 25deg);*/
+
+  --radius: 0.625rem;
+}
+
+@theme inline {
+  --color-background: #f9f9f9;
+  --color-dark: hsl(0 0 5);
+  --color-darkish: hsl(0 0 15);
+  --color-light: hsl(0 0 95);
+  --color-gray: hsl(0 0 76);
+  --color-gray-light: hsl(0 0 93);
+  --color-primary: hsl(210 69 35);
+  --color-primary-muted: hsl(213 88 20);
+  --color-primary-disabled: hsl(210 35 80);
+  --color-tint: hsl(236 48 94);
+  --color-tint-muted: hsl(239 67 79);
+
+  --color-border: oklch(92.2% 0 0deg);
+  --color-input: oklch(92.2% 0 0deg);
+  --color-ring: oklch(70.8% 0 0deg);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-0\.5xl: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-1\.5xl: calc(var(--radius) + 6px);
+  --radius-2xl: calc(var(--radius) + 8px); /* 18px */
+  --radius-2\.5xl: calc(var(--radius) + 10px); /* 20px */
+}
+
+/*
+  Base Layer
+  - fonts, global
+*/
+
 @layer base {
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-weight: unset;
-    font-size: unset;
+  * {
+    @apply border-border outline-ring/50;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: geometricPrecision;
+  }
+  html {
+    @apply scroll-smooth;
+  }
+  body {
+    @apply bg-background text-darkish min-h-screen flex flex-col;
+  }
+
+  body.locked {
+    @apply overflow-hidden relative h-full;
+  }
+
+  button {
+    @apply cursor-pointer;
   }
 }
 
-@plugin "@tailwindcss/typography";
+/*
+  Common utilities
+  - used both in files & here
+*/
 
-@source inline("lg:col-span-4");
-@source inline("lg:col-span-6");
-@source inline("lg:col-span-8");
-@source inline("lg:col-span-12");
-@source inline("border-border");
-@source inline("bg-card");
-@source inline("border-error");
-@source inline("bg-error/30");
-@source inline("border-success");
-@source inline("bg-success/30");
-@source inline("border-warning");
-@source inline("bg-warning/30");
-
-@theme {
-  --breakpoint-sm: 40rem;
-  --breakpoint-md: 48rem;
-  --breakpoint-lg: 64rem;
-  --breakpoint-xl: 80rem;
-  --breakpoint-2xl: 86rem;
-  --font-mono: var(--font-geist-mono);
-  --font-sans: var(--font-geist-sans);
+@utility flex-centered {
+  @apply flex items-center justify-center;
 }
+
+@utility text-lb {
+  @apply whitespace-pre-line;
+}
+
+/*
+  Typography
+*/
+
+@utility h-3xl {
+  @apply text-h-large font-medium leading-[1.2];
+}
+@utility h-2xl {
+  @apply text-3xl font-medium leading-[1.15];
+}
+@utility h-1\.5xl {
+  @apply text-[26px] font-medium leading-[1.15];
+}
+@utility h-xl {
+  @apply text-2xl font-medium leading-[1.15];
+}
+@utility h-lg {
+  @apply text-xl font-medium leading-[1.15];
+}
+@utility h-base {
+  @apply text-lg font-medium leading-[1.15];
+}
+
+@utility p-md {
+  @apply text-lg leading-[1.2] tracking-wide;
+}
+@utility p-base {
+  @apply text-base leading-[1.15];
+}
+@utility p-sm {
+  @apply text-sm leading-[1.15];
+}
+@utility p-xs {
+  @apply text-xs leading-[1.15];
+}
+@utility p-btn {
+  @apply text-lg;
+}
+@utility p-btn-sm {
+  @apply text-base;
+}
+
+/* Other utilities */
+
+@utility bg-gradient-primary {
+  @apply bg-linear-to-r from-tint from-20% to-[#005FA0] to-139%;
+}
+
+/*
+  Utilities Layer
+  - helpers, sizing, etc.
+*/
 
 @layer utilities {
   .container {
@@ -53,172 +204,257 @@
     margin-inline: auto;
     padding-inline: 1rem;
   }
+  .off-container {
+    --padding-x: 1rem;
+    --padding-inline: var(--padding-x);
+    width: 100vw;
+    margin-inline: calc(-50vw + 50%);
+    padding-inline: var(--padding-inline);
+    scroll-padding-inline: var(--padding-inline);
+  }
 
   @variant sm {
     .container {
       max-width: var(--breakpoint-sm);
     }
+    .off-container {
+      --inner-width: var(--breakpoint-sm);
+      --padding-inline: calc(calc(100vw - var(--inner-width)) / 2 + var(--padding-x));
+    }
   }
-
   @variant md {
     .container {
       max-width: var(--breakpoint-md);
-      padding-inline: 2rem;
+    }
+    .off-container {
+      --inner-width: var(--breakpoint-md);
     }
   }
-
   @variant lg {
     .container {
       max-width: var(--breakpoint-lg);
+      padding-inline: 1.5rem;
+    }
+    .off-container {
+      --inner-width: var(--breakpoint-lg);
+      --padding-x: 1.5rem;
     }
   }
-
   @variant xl {
     .container {
       max-width: var(--breakpoint-xl);
+      padding-inline: 2rem;
+    }
+    .off-container {
+      --inner-width: var(--breakpoint-xl);
+      --padding-x: 2rem;
     }
   }
-
   @variant 2xl {
     .container {
       max-width: var(--breakpoint-2xl);
     }
+    .off-container {
+      --inner-width: var(--breakpoint-2xl);
+    }
   }
 }
 
-:root {
-  --background: oklch(100% 0 0deg);
-  --foreground: oklch(14.5% 0 0deg);
-  --card: oklch(96.5% 0.005 265deg);
-  --card-foreground: oklch(14.5% 0 0deg);
-  --popover: oklch(100% 0 0deg);
-  --popover-foreground: oklch(14.5% 0 0deg);
-  --primary: oklch(20.5% 0 0deg);
-  --primary-foreground: oklch(98.5% 0 0deg);
-  --secondary: oklch(97% 0 0deg);
-  --secondary-foreground: oklch(20.5% 0 0deg);
-  --muted: oklch(97% 0 0deg);
-  --muted-foreground: oklch(55.6% 0 0deg);
-  --accent: oklch(97% 0 0deg);
-  --accent-foreground: oklch(20.5% 0 0deg);
-  --destructive: oklch(57.7% 0.245 27.325deg);
-  --destructive-foreground: oklch(57.7% 0.245 27.325deg);
-  --border: oklch(92.2% 0 0deg);
-  --input: oklch(92.2% 0 0deg);
-  --ring: oklch(70.8% 0 0deg);
-  --chart-1: oklch(64.6% 0.222 41.116deg);
-  --chart-2: oklch(60% 0.118 184.704deg);
-  --chart-3: oklch(39.8% 0.07 227.392deg);
-  --chart-4: oklch(82.8% 0.189 84.429deg);
-  --chart-5: oklch(76.9% 0.188 70.08deg);
-  --radius: 0.625rem;
-  --sidebar: oklch(98.5% 0 0deg);
-  --sidebar-foreground: oklch(14.5% 0 0deg);
-  --sidebar-primary: oklch(20.5% 0 0deg);
-  --sidebar-primary-foreground: oklch(98.5% 0 0deg);
-  --sidebar-accent: oklch(97% 0 0deg);
-  --sidebar-accent-foreground: oklch(20.5% 0 0deg);
-  --sidebar-border: oklch(92.2% 0 0deg);
-  --sidebar-ring: oklch(70.8% 0 0deg);
-  --success: oklch(78% 0.08 200deg);
-  --warning: oklch(89% 0.1 75deg);
-  --error: oklch(75% 0.15 25deg);
-}
+/*
+  Components Layer
+  - typography, components, etc
+*/
 
-[data-theme='dark'] {
-  --background: oklch(14.5% 0 0deg);
-  --foreground: oklch(98.5% 0 0deg);
-  --card: oklch(17% 0 0deg);
-  --card-foreground: oklch(98.5% 0 0deg);
-  --popover: oklch(14.5% 0 0deg);
-  --popover-foreground: oklch(98.5% 0 0deg);
-  --primary: oklch(98.5% 0 0deg);
-  --primary-foreground: oklch(20.5% 0 0deg);
-  --secondary: oklch(26.9% 0 0deg);
-  --secondary-foreground: oklch(98.5% 0 0deg);
-  --muted: oklch(26.9% 0 0deg);
-  --muted-foreground: oklch(70.8% 0 0deg);
-  --accent: oklch(26.9% 0 0deg);
-  --accent-foreground: oklch(98.5% 0 0deg);
-  --destructive: oklch(39.6% 0.141 25.723deg);
-  --destructive-foreground: oklch(63.7% 0.237 25.331deg);
-  --border: oklch(26.9% 0 0deg);
-  --input: oklch(26.9% 0 0deg);
-  --ring: oklch(43.9% 0 0deg);
-  --chart-1: oklch(48.8% 0.243 264.376deg);
-  --chart-2: oklch(69.6% 0.17 162.48deg);
-  --chart-3: oklch(76.9% 0.188 70.08deg);
-  --chart-4: oklch(62.7% 0.265 303.9deg);
-  --chart-5: oklch(64.5% 0.246 16.439deg);
-  --sidebar: oklch(20.5% 0 0deg);
-  --sidebar-foreground: oklch(98.5% 0 0deg);
-  --sidebar-primary: oklch(48.8% 0.243 264.376deg);
-  --sidebar-primary-foreground: oklch(98.5% 0 0deg);
-  --sidebar-accent: oklch(26.9% 0 0deg);
-  --sidebar-accent-foreground: oklch(98.5% 0 0deg);
-  --sidebar-border: oklch(26.9% 0 0deg);
-  --sidebar-ring: oklch(43.9% 0 0deg);
-  --success: oklch(28% 0.1 200deg);
-  --warning: oklch(35% 0.08 70deg);
-  --error: oklch(45% 0.1 25deg);
-}
+@layer components {
+  /* typography */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-success: var(--success);
-  --color-warning: var(--warning);
-  --color-error: var(--error);
-}
+  .subline {
+    @apply relative;
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
+    &:after {
+      @apply content-[''] absolute left-0 -bottom-3
+        bg-primary-muted transition-[width];
+      height: 5px;
+      width: 140px;
+      border-radius: 5px;
+    }
   }
-  body {
-    @apply bg-background text-foreground min-h-[100vh] flex flex-col;
+  .subline-collapsed:after {
+    width: 0px;
   }
-}
 
-html {
-  opacity: 0;
-}
+  /*
+    Components
+  */
 
-html[data-theme='dark'],
-html[data-theme='light'] {
-  opacity: initial;
+  .block-title-large {
+    @apply h-xl md:h-3xl text-left;
+  }
+  .block-title-normal {
+    @apply h-lg md:h-1.5xl text-left;
+  }
+
+  .arrow-btn {
+    @apply flex-centered shrink-0 size-8.5 relative
+      bg-primary rounded-full backdrop-blur-2xl transition-colors;
+
+    &:not(:disabled):hover {
+      @apply bg-primary-muted;
+    }
+
+    &:disabled {
+      @apply cursor-default bg-primary-disabled;
+    }
+
+    & svg {
+      @apply size-4.5 relative z-10;
+    }
+  }
+
+  .documents-grid {
+    @apply grid grid-cols-1 lg:grid-cols-2 gap-3.5 lg:gap-5;
+  }
+
+  /*
+    Payload Rich Text
+  */
+
+  .payload-richtext {
+    @apply max-w-none whitespace-normal;
+
+    &.size-small {
+      @apply text-sm leading-[1.15];
+    }
+    &.size-base {
+      @apply text-base leading-[1.2];
+    }
+    &.size-sm-to-base {
+      @apply text-sm sm:text-base leading-[1.2];
+    }
+    &.size-medium {
+      @apply text-lg leading-[1.3];
+    }
+    &.size-base-to-md {
+      @apply text-base sm:text-lg leading-[1.3];
+    }
+
+    & p:has(> br:only-child) {
+      /* flex makes the p tag 0 height when it only has a <br> tag,
+      while if it has just text, it still works */
+      display: flex;
+    }
+    & .h2 {
+      @apply h-xl md:h-2xl leading-[1.2]!;
+    }
+    & .h3 {
+      @apply h-lg md:h-xl leading-[1.2]!;
+    }
+    & .h4 {
+      @apply h-base md:h-lg leading-[1.2]!;
+    }
+    & .ps {
+      @apply p-sm;
+    }
+
+    & a {
+      @apply text-primary break-all sm:break-normal;
+    }
+
+    /* spacing */
+
+    & p,
+    & ul,
+    & ol {
+      @apply mb-[0.7lh];
+    }
+
+    /* for the DocumentsBlock */
+    & > div {
+      @apply mb-4.5;
+    }
+
+    & > *:last-child {
+      margin-bottom: 0px;
+    }
+
+    /* ordered & unordered lists */
+
+    & ol {
+      @apply list-decimal pl-7 md:pl-5;
+
+      &:empty:has(> :nth-child(10)) {
+        @apply pl-10 md:pl-8;
+      }
+    }
+    & ul {
+      @apply list-disc pl-7 md:pl-5;
+    }
+    & li {
+      @apply text-lb my-2 last:mb-0;
+
+      &::marker {
+        @apply text-primary;
+      }
+    }
+  }
+
+  /*
+    Embla carousel
+  */
+
+  .embla__container {
+    @apply flex;
+    /*touch-action: pan-y pinch-zoom;*/
+    backface-visibility: hidden;
+  }
+  .embla__slide {
+    @apply shrink-0 transition-opacity last:mr-0!;
+    width: var(--slide-width, 18rem);
+    margin-right: var(--slide-gap, 1.25rem);
+  }
+
+  .embla__controls {
+    @apply flex items-center justify-between;
+  }
+
+  .embla__buttons {
+    @apply flex items-center gap-1.5;
+  }
+  /*.embla__button {
+   Moved to .arrow-btn
+  }*/
+
+  .embla__dots {
+    @apply flex items-center gap-1.25;
+  }
+  .embla__dot {
+    @apply shrink-0 size-3 rounded-full transition-colors
+      hover:bg-gray border-2 border-gray/50;
+
+    &.active {
+      @apply border-0 bg-primary pointer-events-none;
+    }
+  }
+
+  /* custom for some carousels */
+
+  .info-cards-sizing {
+    --slide-width: 19rem;
+    --slide-gap: 1.5rem;
+  }
+  @variant lg {
+    .info-cards-sizing {
+      --slide-width: 18.6rem;
+      --slide-gap: 2.5rem;
+    }
+  }
+
+  .info-tile-with-slider .embla__container {
+    --slide-width: 90%;
+  }
+  @variant lg {
+    .info-tile-with-slider .embla__container {
+      --slide-width: 100%;
+    }
+  }
 }

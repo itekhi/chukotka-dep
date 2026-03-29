@@ -1,8 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 const config = {
-  theme: {
-    extend: {},
-  },
+  theme: {},
 }
 
 export default config
