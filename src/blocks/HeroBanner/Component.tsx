@@ -18,6 +18,8 @@ export const HeroBannerBlock: React.FC<HeroBannerProps> = ({
         <ImageMedia
           resource={image}
           // size="100vw, (min-width: 1376px) 1400px"
+          loading="eager"
+          priority={titleAsH1 ?? false}
           className="size-full object-cover object-top"
         />
 

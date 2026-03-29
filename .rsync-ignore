@@ -3,6 +3,7 @@
 .github/
 node_modules/
 tests/
+public/media/
 *.md
 .env
 .env.example
