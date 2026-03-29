@@ -13,26 +13,26 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '25'
-          cache: 'npm'
+      # - name: Setup Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '25'
+      #     cache: 'npm'
 
-      - name: Install Dependencies
-        run: npm ci
+      # - name: Install Dependencies
+      #   run: npm ci
 
-      - name: Pre-build Next.js App
-        env:
-          NEXT_PUBLIC_SERVER_URL: https://dep-test.invest-chukotka.ru
-        run: npx next build --experimental-build-mode compile
+      # - name: Pre-build Next.js App
+      #   env:
+      #     NEXT_PUBLIC_SERVER_URL: https://dep-test.invest-chukotka.ru
+      #   run: npx next build --experimental-build-mode compile
 
-      - name: Prepare Standalone Bundle
-        # Next.js standalone doesn't include public/ or static/ by default.
-        # We move them into the standalone folder so we only have to rsync ONE directory.
-        run: |
-          cp -r public .next/standalone/public
-          cp -r .next/static .next/standalone/.next/static
+      # - name: Prepare Standalone Bundle
+      #   # Next.js standalone doesn't include public/ or static/ by default.
+      #   # We move them into the standalone folder so we only have to rsync ONE directory.
+      #   run: |
+      #     cp -r public .next/standalone/public
+      #     cp -r .next/static .next/standalone/.next/static
 
       - name: Setup SSH Connection (For Rsync)
         # Native rsync needs this key temporarily available on the runner to connect.
@@ -44,7 +44,7 @@ jobs:
       - name: Rsync to Remote
         run: |
           # Sync .next folder, package.json, next.config.js, and public assets
-          rsync -avz --delete -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
+          rsync -avz -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
             --exclude-from='.rsync-ignore' \
             ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_DIR }}
 

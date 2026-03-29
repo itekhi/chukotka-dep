@@ -8,8 +8,8 @@ npm install --omit=dev
 
 # 2. Run the Generate phase
 # This connects to your local MongoDB and builds static pages
-echo "Running Next.js Generate..."
-npx next build --experimental-build-mode generate
+echo "Building Next.js..."
+./node_modules/.bin/next build
 
 # 4. Restart via PM2
 # We run the server.js inside the standalone folder
