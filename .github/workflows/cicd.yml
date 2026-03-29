@@ -44,7 +44,7 @@ jobs:
       - name: Rsync to Remote
         run: |
           # Sync .next folder, package.json, next.config.js, and public assets
-          rsync -avz -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
+          rsync -avz --delete -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
             --exclude-from='.rsync-ignore' \
             ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_DIR }}
 
