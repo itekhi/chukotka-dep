@@ -23,4 +23,4 @@ cp -r public/. .next/standalone/public/
 # 4. Restart via PM2
 # We run the server.js inside the standalone folder
 echo "Restarting PM2..."
-pm2 restart chukotkadep || pm2 start .next/standalone/server.js --name "chukotkadep"
+pm2 restart chukotkadep || pm2 start pm2.config.js
