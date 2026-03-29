@@ -1,8 +1,8 @@
 module.exports = {
   apps: [
     {
-      name: 'chukotkadep',
-      script: './.next/standalone/server.js',
+      name: 'chukotka-dep',
+      script: 'npm start',
       instances: 1,
       autorestart: true,
       watch: false,

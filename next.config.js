@@ -11,8 +11,6 @@ const __dirname = dirname(__filename)
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
-
   images: {
     remotePatterns: [
       ...[NEXT_PUBLIC_SERVER_URL, 'http://itekhi-mm.local:3000'].map((item) => {
