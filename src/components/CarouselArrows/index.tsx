@@ -1,6 +1,7 @@
-import React, { ComponentPropsWithRef, useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { EmblaCarouselType } from 'embla-carousel'
 import ArrowButton from '@/components/ArrowButton'
+import { cn } from '@/utilities/ui'
 
 type UsePrevNextButtonsType = {
   prevBtnDisabled: boolean
@@ -47,10 +48,22 @@ export const usePrevNextButtons = (
 
 // type PropType = ComponentPropsWithRef<'button'>
 
-export const PrevButton: React.FC<any> = (props) => {
-  return <ArrowButton className="embla__button embla__button--prev" direction="left" {...props} />
+export const PrevButton: React.FC<any> = ({ className, ...props }) => {
+  return (
+    <ArrowButton
+      className={cn('embla__button embla__button--prev', className)}
+      direction="left"
+      {...props}
+    />
+  )
 }
 
-export const NextButton: React.FC<any> = (props) => {
-  return <ArrowButton className="embla__button embla__button--next" direction="right" {...props} />
+export const NextButton: React.FC<any> = ({ className, ...props }) => {
+  return (
+    <ArrowButton
+      className={cn('embla__button embla__button--next', className)}
+      direction="right"
+      {...props}
+    />
+  )
 }
