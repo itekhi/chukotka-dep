@@ -23,6 +23,8 @@ jobs:
         run: npm ci
 
       - name: Pre-build Next.js App
+        env:
+          NEXT_PUBLIC_SERVER_URL: https://dep-test.invest-chukotka.ru
         run: npx next build --experimental-build-mode compile
 
       - name: Prepare Standalone Bundle
