@@ -71,6 +71,7 @@ export const News: CollectionConfig<'news'> = {
     {
       name: 'publishedAt',
       type: 'date',
+      label: 'Дата публикации',
       admin: {
         date: {
           pickerAppearance: 'dayAndTime',
