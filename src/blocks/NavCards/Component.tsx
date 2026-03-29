@@ -6,10 +6,10 @@ import useEmblaCarousel from 'embla-carousel-react'
 import type { NavCardsBlock as NavCardsBlockProps } from '@/payload-types'
 
 import BlockContainer from '@/blocks/BlockContainer'
-import { cn } from '@/utilities/ui'
+import { PrevButton, NextButton, usePrevNextButtons } from '@/components/CarouselArrows'
+// import { cn } from '@/utilities/ui'
 
 import Card from './Card'
-import { PrevButton, NextButton, usePrevNextButtons } from './CarouselArrows'
 import { DotButton, useDotButton } from './CarouselDots'
 
 type Props = {

@@ -45,12 +45,12 @@ export const usePrevNextButtons = (
   }
 }
 
-type PropType = ComponentPropsWithRef<'button'>
+// type PropType = ComponentPropsWithRef<'button'>
 
-export const PrevButton: React.FC<PropType> = (props) => {
+export const PrevButton: React.FC<any> = (props) => {
   return <ArrowButton className="embla__button embla__button--prev" direction="left" {...props} />
 }
 
-export const NextButton: React.FC<PropType> = (props) => {
+export const NextButton: React.FC<any> = (props) => {
   return <ArrowButton className="embla__button embla__button--next" direction="right" {...props} />
 }

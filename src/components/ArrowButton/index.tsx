@@ -4,7 +4,7 @@ import { createElement, HTMLElementType } from 'react'
 type Props = {
   direction: 'left' | 'right'
   htmlElement?: HTMLElementType
-  onClick?: () => void
+  onClick?: () => void | undefined
   className?: string
 }
 

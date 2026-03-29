@@ -9,7 +9,7 @@ import BlockContainer from '@/blocks/BlockContainer'
 import { cn } from '@/utilities/ui'
 
 import Card from './Card'
-import { PrevButton, NextButton, usePrevNextButtons } from './CarouselArrows'
+import { PrevButton, NextButton, usePrevNextButtons } from '@/components/CarouselArrows'
 
 type Props = {
   className?: string
