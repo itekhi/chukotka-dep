@@ -4,7 +4,7 @@ set -e
 
 # 1. Ensure production dependencies are installed (including 'next')
 # This is fast because it only installs production deps
-npm install --omit=dev
+npm install
 
 # 2. Run the Generate phase
 # This connects to your local MongoDB and builds static pages
