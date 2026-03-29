@@ -14,4 +14,4 @@ echo "Building Next.js..."
 # 4. Restart via PM2
 # We run the server.js inside the standalone folder
 echo "Restarting PM2..."
-pm2 restart chukotkadep || pm2 start pm2.config.js
+pm2 restart chukotkadep || pm2 start pm2.config.cjs
