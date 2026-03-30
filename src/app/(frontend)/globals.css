@@ -272,11 +272,9 @@
     @apply relative;
 
     &:after {
-      @apply content-[''] absolute left-0 -bottom-3
+      @apply content-[''] h-1.25 w-35 max-w-full
+        absolute left-0 -bottom-3 rounded-[5px]
         bg-primary-muted transition-[width];
-      height: 5px;
-      width: 140px;
-      border-radius: 5px;
     }
   }
   .subline-collapsed:after {

@@ -94,7 +94,7 @@ const DesktopTabbedBanner = ({ tabs, className }: { tabs: TabsType; className?: 
                       <div className="grow w-full relative xl:mt-3 -mb-7">
                         <ImageMedia
                           resource={tab.objectImage}
-                          className="max-h-50 w-auto h-full absolute bottom-0 left-1/2 -translate-x-1/2"
+                          className="max-h-72 w-auto h-full absolute bottom-0 left-1/2 -translate-x-1/2"
                         />
                       </div>
                     )}
