@@ -11,7 +11,15 @@ const getNews = async (
 ): Promise<NewsType[]> => {
   if (mode === 'all') {
     const payload = await getPayload({ config: configPromise })
-    return (await payload.find({ collection: 'news', sort: '-publishedAt', depth: 0 })).docs
+
+    return (
+      await payload.find({
+        collection: 'news',
+        sort: '-publishedAt',
+        depth: 0,
+        limit: 0,
+      })
+    ).docs
   }
   if (mode === 'specific') {
     return Array.isArray(specific) ? specific.filter((n) => typeof n === 'object') : []

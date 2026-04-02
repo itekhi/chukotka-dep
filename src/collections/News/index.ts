@@ -2,7 +2,6 @@ import type { CollectionConfig } from 'payload'
 
 import {
   FixedToolbarFeature,
-  HeadingFeature,
   HorizontalRuleFeature,
   InlineToolbarFeature,
   lexicalEditor,
