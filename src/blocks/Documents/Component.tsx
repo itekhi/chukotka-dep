@@ -21,6 +21,7 @@ const getDocuments = async (
         collection: 'documents',
         sort: '-publishedAt',
         where: { category: { equals: category } },
+        limit: 0,
       })
     ).docs
   }
