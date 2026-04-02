@@ -6,7 +6,7 @@ import { CMSLink } from '@/components/Link'
 export const ContentBlock = ({ richText, link }: CollapsibleBlocksContentBlock) => {
   return (
     <div className="pb-2 md:pb-4">
-      <RichText data={richText} withBrDisabler={false} />
+      <RichText data={richText} withBrDisabler={false} sizing="base-to-md" />
 
       {link && link.type !== 'off' && (
         <center className="mt-4">

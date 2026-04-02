@@ -15,7 +15,7 @@ export const SubSectionsBlock = ({ subSections }: CollapsibleBlocksSubSectionsBl
           className={index !== 0 ? '-mt-0.5' : ''}
           containerOverflowHidden={true}
         >
-          <RichText data={richText} withBrDisabler={false} />
+          <RichText data={richText} withBrDisabler={false} sizing="base-to-md" />
         </Collapsible>
       ))}
     </div>
