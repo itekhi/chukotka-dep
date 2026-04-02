@@ -21,6 +21,7 @@ export const HeaderClient: React.FC<{ data: Header }> = ({ data }) => {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   const toggleMenu = () => setMobileNavOpen(!mobileNavOpen)
+  const closeMenu = () => setMobileNavOpen(false)
 
   return (
     <header className="relative z-50 pt-4">
@@ -54,7 +55,7 @@ export const HeaderClient: React.FC<{ data: Header }> = ({ data }) => {
 
           {/* we need to wrap useSearchParams in Suspense... */}
           <Suspense>
-            <MobileMenu data={data} open={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
+            <MobileMenu data={data} open={mobileNavOpen} onClose={closeMenu} />
           </Suspense>
         </div>
 
@@ -74,7 +75,7 @@ const MobileMenu = ({ data, open, onClose }: MobileMenuProps) => {
     // if either location or params (i.e. #hash)
     // changes — we close the menu...
     onClose()
-  }, [pathname, searchParams, onClose])
+  }, [pathname, searchParams]) // eslint-disable-line
 
   return (
     <AnimatePresence>

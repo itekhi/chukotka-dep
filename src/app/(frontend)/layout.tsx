@@ -30,8 +30,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html className={cn()} lang="ru">
       <head>
-        <link href="/favicon.ico" rel="icon" sizes="32x32" />
-        <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        <link href="/favicon.ico" rel="icon" sizes="48x48" />
 
         <meta name="apple-mobile-web-app-title" content="Chukotka" />
       </head>

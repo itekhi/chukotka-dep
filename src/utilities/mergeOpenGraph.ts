@@ -9,8 +9,8 @@ const defaultOpenGraph: Metadata['openGraph'] = {
       url: `${getServerSideURL()}/og.webp`,
     },
   ],
-  siteName: 'Правительство Чукотского АО',
-  title: 'Правительство Чукотского АО',
+  siteName: 'Департамент экономики и инвестиций Чукотского АО',
+  title: 'Департамент экономики и инвестиций Чукотского АО',
 }
 
 export const mergeOpenGraph = (og?: Metadata['openGraph']): Metadata['openGraph'] => {

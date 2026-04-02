@@ -25,9 +25,8 @@ export const generateMeta = async (args: { doc: Partial<Page> | null }): Promise
   const ogImage = getImageURL(doc?.meta?.image)
 
   const title = doc?.meta?.title || doc?.title
-  const titleWithSuffix = title
-    ? title + ' | Правительство Чукотского АО'
-    : 'Правительство Чукотского АО'
+  const suffix = 'Департамент экономики и инвестиций Чукотского АО'
+  const titleWithSuffix = title ? `${title} | ${suffix}` : suffix
 
   return {
     title: titleWithSuffix,

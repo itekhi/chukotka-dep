@@ -14,6 +14,7 @@ const Document: React.FC<Props> = ({ doc }) => {
       rel="noopener noreferrer"
       download={false}
       className="group flex items-start gap-3 md:gap-4.5 p-3 md:py-5 md:px-4 border-2 border-tint rounded-2.5xl hover:border-primary transition-[border]"
+      title={doc.title}
     >
       <div className="shrink-0 h-full pt-1 md:pt-0.5 pl-1 md:pl-2">
         {/* doc-icon.svg */}
