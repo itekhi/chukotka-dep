@@ -28,7 +28,6 @@ export async function Footer() {
       <footer id="footer" className="mt-auto bg-primary-muted rounded-t-4xl relative">
         <div className="container flex flex-col text-white pt-4 pb-8 md:py-8 xl:py-11">
           <div className="flex flex-col items-stretch sm:flex-row w-full bg-white rounded-2.5xl">
-            {/* left side */}
             <div className="shrink-0 flex flex-col items-start relative z-10 pt-8 px-8 sm:py-12 sm:pl-12 lg:py-15 lg:pl-15">
               <Image src="/assets/gosuslugi-banner.svg" alt="" width={188} height={61} />
 
@@ -55,7 +54,12 @@ export async function Footer() {
           </div>
 
           {/* Контейнер контактов */}
-          <div className="mt-13" itemScope={true} itemType="http://schema.org/Organization">
+          <div
+            id="contacts"
+            className="mt-13 scroll-mt-7"
+            itemScope={true}
+            itemType="http://schema.org/Organization"
+          >
             <h2 className="h-3xl subline after:bg-tint">Контакты</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-10 lg:flex [&>div]:grow mt-12">
