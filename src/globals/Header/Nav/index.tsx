@@ -14,14 +14,17 @@ export const HeaderNav: HeaderNavType = ({ data, className }) => {
 
   return (
     <nav className={cn('flex gap-3 items-center justify-between pt-8', className)}>
-      {navItems.map(({ link }, i) => {
+      {navItems.map(({ link, special }, i) => {
         return (
           <CMSLink
             key={i}
             {...link}
             appearance="inline"
-            className="block font-light text-base lg:text-[17px] xl:text-lg hover:text-primary transition-colors"
-            withExternalIcon
+            className={cn(
+              'block font-light text-base lg:text-[17px] xl:text-lg opacity-100 hover:opacity-60 transition-opacity',
+              special ? 'text-primary-muted font-medium' : '',
+            )}
+            // withExternalIcon
           />
         )
       })}

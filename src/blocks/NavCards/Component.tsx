@@ -26,7 +26,7 @@ export const NavCardsBlock: React.FC<Props> = ({ blockTitle, cards }) => {
 
   return (
     <BlockContainer title={blockTitle}>
-      <div className="embla">
+      <div className="embla overflow-hidden">
         <div className="embla__viewport" ref={emblaRef}>
           <div
             className="embla__container"

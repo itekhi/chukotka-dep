@@ -3242,6 +3242,7 @@ export interface Header {
           anchor?: string | null;
           label?: string | null;
         };
+        special?: boolean | null;
         id?: string | null;
       }[]
     | null;
@@ -3302,6 +3303,7 @@ export interface HeaderSelect<T extends boolean = true> {
               anchor?: T;
               label?: T;
             };
+        special?: T;
         id?: T;
       };
   updatedAt?: T;

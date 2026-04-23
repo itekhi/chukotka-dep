@@ -53,7 +53,14 @@ export const Header: GlobalConfig = {
         plural: 'Нав. элементы',
       },
       type: 'array',
-      fields: [link({ overrides: { label: false } })],
+      fields: [
+        link({ overrides: { label: false } }),
+        {
+          type: 'checkbox',
+          name: 'special',
+          label: 'Cпециальная',
+        },
+      ],
       maxRows: 10,
       admin: {
         // initCollapsed: true,

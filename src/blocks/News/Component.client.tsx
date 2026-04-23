@@ -47,7 +47,7 @@ export default function ClientNewsBlock({ news }: { news: NewsType[] }) {
 
   return (
     <>
-      <div className="embla">
+      <div className="embla overflow-hidden">
         <div className="embla__viewport" ref={emblaRef}>
           <div
             className="embla__container"
