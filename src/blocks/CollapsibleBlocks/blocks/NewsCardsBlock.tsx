@@ -16,13 +16,9 @@ export const NewsCardsBlock = ({ cards }: CollapsibleBlocksNewsCardsBlock) => {
     usePrevNextButtons(emblaApi)
 
   return (
-    <div className="h-full off-container embla overflow-hidden">
+    <div className="h-full embla inner-container no-falling-out">
       <div className="embla__viewport" ref={emblaRef}>
-        <div
-          className="embla__container"
-          // @ts-expect-error ...
-          style={{ '--slide-width': '19.55rem' }}
-        >
+        <div className="embla__container news-cards-sizing">
           {cards.map(({ id, title, text, link, publishedAt }) => (
             <div key={id} className="embla__slide">
               <NewsCard

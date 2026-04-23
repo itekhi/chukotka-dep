@@ -20,7 +20,7 @@ export const InfoCardsBlock = ({ cards }: CollapsibleBlocksInfoCardsBlock) => {
     usePrevNextButtons(emblaApi)
 
   return (
-    <div className="h-full off-container embla overflow-hidden">
+    <div className="h-full embla inner-container no-falling-out">
       <div className="embla__viewport" ref={emblaRef}>
         <div className="embla__container info-cards-sizing">
           {cards.map(({ id, ...card }) => (

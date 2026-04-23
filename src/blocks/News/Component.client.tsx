@@ -47,13 +47,9 @@ export default function ClientNewsBlock({ news }: { news: NewsType[] }) {
 
   return (
     <>
-      <div className="embla overflow-hidden">
+      <div className="embla inner-container no-falling-out">
         <div className="embla__viewport" ref={emblaRef}>
-          <div
-            className="embla__container"
-            // @ts-expect-error ...
-            style={{ '--slide-width': '19.55rem' }}
-          >
+          <div className="embla__container news-cards-sizing">
             {news?.map(({ id, title, shortDescription, publishedAt }, idx) => (
               <div key={id} className="embla__slide">
                 <NewsCard
