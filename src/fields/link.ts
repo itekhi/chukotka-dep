@@ -110,8 +110,8 @@ export const link: LinkType = ({
         admin: {
           condition: (_, siblingData) => siblingData?.type === 'document',
           appearance: 'drawer',
-          width: '50%',
-          style: { maxWidth: '48%' },
+          width: '100%',
+          // style: { maxWidth: '48%' },
         },
         required: true,
       },
