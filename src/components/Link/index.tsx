@@ -22,6 +22,7 @@ export type CMSLinkType = {
   size?: ButtonProps['size'] | null
   type?: 'off' | 'custom' | 'reference' | 'document' | null
   anchor?: string | null | undefined
+  download?: boolean
   url?: string | null
   withExternalIcon?: boolean
 }
@@ -63,6 +64,7 @@ const CMSLinkComponent: CMSLinkComponentType = (props, ref) => {
     reference,
     document,
     size: sizeFromProps,
+    download: downloadFromProps,
     anchor,
     url,
     withExternalIcon,
@@ -84,7 +86,7 @@ const CMSLinkComponent: CMSLinkComponentType = (props, ref) => {
 
   const otherProps = {
     ...(newTab ? { rel: 'noopener noreferrer', target: '_blank' } : {}),
-    ...(type === 'document' ? { download: true } : {}),
+    ...(type === 'document' ? { download: downloadFromProps ?? true } : {}),
   }
 
   /* Ensure we don't break any styles set by richText */

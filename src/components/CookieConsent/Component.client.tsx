@@ -37,7 +37,7 @@ export default function ClientCookieConsent({
       >
         {/* prettier-ignore */}
         <p className="p-sm text-center leading-[1.3]">
-          Продолжая пользоваться настоящим сайтом, вы выражаете <CMSLink {...privacyPolicyLink} className="text-primary hover:underline">согласие на обработку ваших персональных данных</CMSLink> с использованием сервиса аналитики Яндекс Метрика. В случае несогласия с обработкой ваших персональных данных вы можете отключить сохранение cookies в настройках вашего браузера.
+          Продолжая пользоваться настоящим сайтом, вы выражаете <CMSLink {...privacyPolicyLink} download={false} className="text-primary hover:underline">согласие на обработку ваших персональных данных</CMSLink> с использованием сервиса аналитики Яндекс Метрика. В случае несогласия с обработкой ваших персональных данных вы можете отключить сохранение cookies в настройках вашего браузера.
         </p>
 
         <div className="flex justify-center w-full mt-5">
