@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { draftMode } from 'next/headers'
 
 import { AdminBar } from '@/components/AdminBar'
+import CookieConsent from '@/components/CookieConsent'
 import { Footer } from '@/globals/Footer/Component'
 import { Header } from '@/globals/Header/Component'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
@@ -31,7 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html className={cn()} lang="ru">
       <head>
         <link href="/favicon.ico" rel="icon" sizes="48x48" />
-
+        <meta name="robots" content="index, follow" />
         <meta name="apple-mobile-web-app-title" content="Chukotka" />
       </head>
 
@@ -41,6 +42,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Header />
         {children}
         <Footer />
+
+        <CookieConsent />
 
         <div id="__portals" />
       </body>

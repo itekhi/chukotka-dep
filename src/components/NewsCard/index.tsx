@@ -1,8 +1,9 @@
-import { CMSLink, CMSLinkType } from '../Link'
-import { formatDateTime, formatRussianDate } from '@/utilities/formatDateTime'
-import { cn } from '@/utilities/ui'
-import useClickableCard from '@/utilities/useClickableCard'
 import { forwardRef } from 'react'
+
+import { CMSLink, CMSLinkType } from '@/components/Link'
+import { formatDateTime, formatRussianDate } from '@/utilities/formatDateTime'
+import useClickableCard from '@/utilities/useClickableCard'
+import { cn } from '@/utilities/ui'
 
 type Props = {
   data: {

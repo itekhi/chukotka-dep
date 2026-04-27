@@ -1,6 +1,5 @@
 import type { GlobalConfig } from 'payload'
 
-import { link } from '@/fields/link'
 import { revalidateFooter } from './hooks/revalidateFooter'
 
 export const Footer: GlobalConfig = {
@@ -72,10 +71,6 @@ export const Footer: GlobalConfig = {
         },
       ],
     },
-    link({
-      disableLabel: true,
-      overrides: { name: 'privacyPolicyLink', label: 'Ссылка на политику конфиденциальности' },
-    }),
     {
       type: 'text',
       label: 'Ссылка на Телеграм канал',

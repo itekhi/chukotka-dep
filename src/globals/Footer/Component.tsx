@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import Image from 'next/image'
-import type { Footer } from '@/payload-types'
+import type { Footer, Setting } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
 import GosuslugiWidget from '@/components/GosuslugiWidget'
@@ -10,8 +10,8 @@ import { cn } from '@/utilities/ui'
 
 export async function Footer() {
   // @ts-expect-error for some reason it messes up Footer with Header...
-  const footerData: Footer = await getCachedGlobal('footer', 1)()
-
+  const { privacyPolicyLink }: Setting = await getCachedGlobal('settings', 1)()
+  // @ts-expect-error for some reason it messes up Footer with Header...
   const {
     address,
     addressPostalCode,
@@ -19,9 +19,8 @@ export async function Footer() {
     emails,
     phones,
     openingHours,
-    privacyPolicyLink,
     telegramUrl,
-  } = footerData
+  }: Footer = await getCachedGlobal('footer', 1)()
 
   return (
     <>

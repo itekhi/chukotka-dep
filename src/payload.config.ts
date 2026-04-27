@@ -14,6 +14,7 @@ import { DocumentCategories } from './collections/DocumentCategories'
 import { Users } from './collections/Users'
 import { Footer } from './globals/Footer/config'
 import { Header } from './globals/Header/config'
+import { Settings } from './globals/Settings/config'
 import { plugins } from './plugins'
 import { defaultLexical } from './richtext/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
@@ -84,7 +85,7 @@ export default buildConfig({
   },
   collections: [Pages, News, Documents, DocumentCategories, Media, Users],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer],
+  globals: [Header, Footer, Settings],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
   sharp,
