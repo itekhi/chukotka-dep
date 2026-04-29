@@ -123,6 +123,7 @@ export async function Footer() {
             <CMSLink
               {...privacyPolicyLink}
               className="p-base hover:text-white/70 transition-colors"
+              download={false}
             >
               Политика обработки персональных
               <br />
