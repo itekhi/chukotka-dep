@@ -154,12 +154,12 @@ export const BLOCKS: Block[] = [
     ============
   */
   {
-    slug: 'banner',
+    slug: 'banners',
     labels: {
-      singular: 'Баннер',
-      plural: 'Баннер',
+      singular: 'Баннеры',
+      plural: 'Баннеры',
     },
-    interfaceName: 'CollapsibleBlocksBannerBlock',
+    interfaceName: 'CollapsibleBlocksBannersBlock',
     admin: {
       images: {
         thumbnail: '/block-examples/collapsible-blocks/banner.jpg',
@@ -167,65 +167,77 @@ export const BLOCKS: Block[] = [
     },
     fields: [
       {
-        type: 'textarea',
-        name: 'title',
-        label: 'Заголовок',
+        type: 'array',
+        name: 'banners',
+        label: false,
         required: true,
-        admin: {
-          description: 'Перенос текста работает только для десктоп и планшет.',
-        },
-      },
-      {
-        type: 'upload',
-        name: 'bgImage',
-        relationTo: 'media',
-        label: 'Фоновое изображение',
-        required: true,
-        filterOptions: {
-          mimeType: { contains: 'image' },
-        },
-      },
-      {
-        type: 'upload',
-        name: 'objectImage',
-        relationTo: 'media',
-        label: 'Изображение объекта',
-        filterOptions: {
-          mimeType: { contains: 'image' },
-        },
-      },
-      link({
-        offable: true,
-      }),
-      {
-        type: 'checkbox',
-        name: 'withCountdown',
-        label: 'С обратным отсчетом',
-      },
-      {
-        type: 'group',
-        name: 'countdown',
-        label: 'Обратный отсчет',
-        admin: {
-          condition: (_, { withCountdown }) => !!withCountdown,
+        labels: {
+          singular: 'Баннер',
+          plural: 'Баннеры',
         },
         fields: [
           {
-            type: 'text',
+            type: 'textarea',
             name: 'title',
             label: 'Заголовок',
+            required: true,
+            admin: {
+              description: 'Перенос текста работает только для десктоп и планшет.',
+            },
           },
           {
-            type: 'date',
-            name: 'endDateTime',
-            label: 'Дата и время окончания',
-            admin: {
-              date: {
-                pickerAppearance: 'dayAndTime',
-                minDate: new Date(),
-              },
-            },
+            type: 'upload',
+            name: 'bgImage',
+            relationTo: 'media',
+            label: 'Фоновое изображение',
             required: true,
+            filterOptions: {
+              mimeType: { contains: 'image' },
+            },
+          },
+          {
+            type: 'upload',
+            name: 'objectImage',
+            relationTo: 'media',
+            label: 'Изображение объекта',
+            filterOptions: {
+              mimeType: { contains: 'image' },
+            },
+          },
+          link({
+            offable: true,
+          }),
+          {
+            type: 'checkbox',
+            name: 'withCountdown',
+            label: 'С обратным отсчетом',
+          },
+          {
+            type: 'group',
+            name: 'countdown',
+            label: 'Обратный отсчет',
+            admin: {
+              condition: (_, { withCountdown }) => !!withCountdown,
+            },
+            fields: [
+              {
+                type: 'text',
+                name: 'title',
+                label: 'Заголовок',
+              },
+              {
+                type: 'date',
+                name: 'endDateTime',
+                label: 'Дата и время окончания',
+                admin: {
+                  date: {
+                    pickerAppearance: 'dayAndTime',
+                    minDate: new Date(),
+                  },
+                },
+                required: true,
+              },
+            ],
           },
         ],
       },

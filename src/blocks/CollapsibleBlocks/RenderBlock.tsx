@@ -1,11 +1,9 @@
 import { CollapsibleBlocksBlock } from '@/payload-types'
 
-import { cn } from '@/utilities/ui'
-
 import { ContentBlock } from './blocks/ContentBlock'
 import { SubSectionsBlock } from './blocks/SubSectionsBlock'
 import { NewsCardsBlock } from './blocks/NewsCardsBlock'
-import { BannerBlock } from './blocks/Banner'
+import { BannersBlock } from './blocks/Banners'
 import { InfoCardsBlock } from './blocks/InfoCards'
 import { BannersGridBlock } from './blocks/BannersGrid'
 
@@ -15,7 +13,7 @@ const blockComponents = {
   content: ContentBlock,
   subSections: SubSectionsBlock,
   newsCards: NewsCardsBlock,
-  banner: BannerBlock,
+  banners: BannersBlock,
   infoCards: InfoCardsBlock,
   bannersGrid: BannersGridBlock,
 }

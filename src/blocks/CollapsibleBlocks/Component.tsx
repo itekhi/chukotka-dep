@@ -28,7 +28,7 @@ export const CollapsibleBlocksBlock = ({
           titleSize={titleSize}
           subtitle={subtitle}
           className={index !== 0 ? '-mt-0.5' : ''}
-          containerOverflowHidden={overflowingBlocks.includes(block[0].blockType)}
+          containerOverflowHidden={overflowingBlocks.includes(block[0]?.blockType)}
         >
           <RenderBlock block={block[0]} />
         </Collapsible>

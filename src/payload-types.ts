@@ -998,7 +998,7 @@ export interface CollapsibleBlocksBlock {
       | CollapsibleBlocksContentBlock
       | CollapsibleBlocksSubSectionsBlock
       | CollapsibleBlocksNewsCardsBlock
-      | CollapsibleBlocksBannerBlock
+      | CollapsibleBlocksBannersBlock
       | CollapsibleBlocksInfoCardsBlock
       | CollapsibleBlocksBannersGridBlock
     )[];
@@ -1101,37 +1101,38 @@ export interface CollapsibleBlocksNewsCardsBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CollapsibleBlocksBannerBlock".
+ * via the `definition` "CollapsibleBlocksBannersBlock".
  */
-export interface CollapsibleBlocksBannerBlock {
-  /**
-   * Перенос текста работает только для десктоп и планшет.
-   */
-  title: string;
-  bgImage: string | Media;
-  objectImage?: (string | null) | Media;
-  link: {
-    type: 'off' | 'reference' | 'document' | 'custom';
-    newTab?: boolean | null;
-    reference?: {
-      relationTo: 'pages';
-      value: string | Page;
-    } | null;
-    document?: (string | null) | Document;
-    url?: string | null;
-    anchor?: string | null;
-    label?: string | null;
-  };
-  countdowns?:
-    | {
-        title?: string | null;
-        endDateTime: string;
-        id?: string | null;
-      }[]
-    | null;
+export interface CollapsibleBlocksBannersBlock {
+  banners: {
+    /**
+     * Перенос текста работает только для десктоп и планшет.
+     */
+    title: string;
+    bgImage: string | Media;
+    objectImage?: (string | null) | Media;
+    link: {
+      type: 'off' | 'reference' | 'document' | 'custom';
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: string | Page;
+      } | null;
+      document?: (string | null) | Document;
+      url?: string | null;
+      anchor?: string | null;
+      label?: string | null;
+    };
+    withCountdown?: boolean | null;
+    countdown?: {
+      title?: string | null;
+      endDateTime: string;
+    };
+    id?: string | null;
+  }[];
   id?: string | null;
   blockName?: string | null;
-  blockType: 'banner';
+  blockType: 'banners';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2470,7 +2471,7 @@ export interface CollapsibleBlocksBlockSelect<T extends boolean = true> {
               content?: T | CollapsibleBlocksContentBlockSelect<T>;
               subSections?: T | CollapsibleBlocksSubSectionsBlockSelect<T>;
               newsCards?: T | CollapsibleBlocksNewsCardsBlockSelect<T>;
-              banner?: T | CollapsibleBlocksBannerBlockSelect<T>;
+              banners?: T | CollapsibleBlocksBannersBlockSelect<T>;
               infoCards?: T | CollapsibleBlocksInfoCardsBlockSelect<T>;
               bannersGrid?: T | CollapsibleBlocksBannersGridBlockSelect<T>;
             };
@@ -2543,28 +2544,33 @@ export interface CollapsibleBlocksNewsCardsBlockSelect<T extends boolean = true>
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CollapsibleBlocksBannerBlock_select".
+ * via the `definition` "CollapsibleBlocksBannersBlock_select".
  */
-export interface CollapsibleBlocksBannerBlockSelect<T extends boolean = true> {
-  title?: T;
-  bgImage?: T;
-  objectImage?: T;
-  link?:
-    | T
-    | {
-        type?: T;
-        newTab?: T;
-        reference?: T;
-        document?: T;
-        url?: T;
-        anchor?: T;
-        label?: T;
-      };
-  countdowns?:
+export interface CollapsibleBlocksBannersBlockSelect<T extends boolean = true> {
+  banners?:
     | T
     | {
         title?: T;
-        endDateTime?: T;
+        bgImage?: T;
+        objectImage?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              document?: T;
+              url?: T;
+              anchor?: T;
+              label?: T;
+            };
+        withCountdown?: T;
+        countdown?:
+          | T
+          | {
+              title?: T;
+              endDateTime?: T;
+            };
         id?: T;
       };
   id?: T;

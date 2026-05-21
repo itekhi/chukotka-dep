@@ -1,16 +1,28 @@
-import { CollapsibleBlocksBannerBlock } from '@/payload-types'
+import { CollapsibleBlocksBannersBlock } from '@/payload-types'
 
 import { ImageMedia } from '@/components/Media'
 import Countdown from '@/components/Countdown'
 import { CMSLink } from '@/components/Link'
 
-export const BannerBlock = (props: CollapsibleBlocksBannerBlock) => {
+type BannerType = CollapsibleBlocksBannersBlock['banners'][0]
+
+export const BannersBlock = ({ banners }: CollapsibleBlocksBannersBlock) => {
+  return (
+    <div className="flex flex-col gap-5">
+      {banners.map((banner) => (
+        <Banner key={banner.id} {...banner} />
+      ))}
+    </div>
+  )
+}
+
+const Banner = (props: BannerType) => {
   const { title, link, bgImage, objectImage, withCountdown, countdown } = props
 
   return (
     <div className="w-full md:min-h-94 flex flex-col sm:flex-row items-stretch rounded-3xl overflow-hidden relative">
       <div className="flex flex-col items-start gap-5.5 p-7 relative z-20">
-        <p className="h-lg md:h-xl md:text-lb md:max-w-118 leading-tight pr-10 sm:pr-0">{title}</p>
+        <p className="h-lg md:h-xl md:text-lb lg:max-w-xl leading-tight pr-10 sm:pr-0">{title}</p>
 
         {withCountdown && countdown && (
           <div className="flex flex-col items-start gap-3">
