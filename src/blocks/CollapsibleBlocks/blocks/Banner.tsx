@@ -10,7 +10,7 @@ export const BannerBlock = (props: CollapsibleBlocksBannerBlock) => {
   return (
     <div className="w-full md:min-h-94 flex flex-col sm:flex-row items-stretch rounded-3xl overflow-hidden relative">
       <div className="flex flex-col items-start gap-5.5 p-7 relative z-20">
-        <p className="h-lg md:h-xl md:text-lb leading-tight pr-10 sm:pr-0">{title}</p>
+        <p className="h-lg md:h-xl md:text-lb md:max-w-118 leading-tight pr-10 sm:pr-0">{title}</p>
 
         {withCountdown && countdown && (
           <div className="flex flex-col items-start gap-3">

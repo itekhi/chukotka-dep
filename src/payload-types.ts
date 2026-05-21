@@ -1122,11 +1122,13 @@ export interface CollapsibleBlocksBannerBlock {
     anchor?: string | null;
     label?: string | null;
   };
-  withCountdown?: boolean | null;
-  countdown?: {
-    title?: string | null;
-    endDateTime: string;
-  };
+  countdowns?:
+    | {
+        title?: string | null;
+        endDateTime: string;
+        id?: string | null;
+      }[]
+    | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'banner';
@@ -2558,12 +2560,12 @@ export interface CollapsibleBlocksBannerBlockSelect<T extends boolean = true> {
         anchor?: T;
         label?: T;
       };
-  withCountdown?: T;
-  countdown?:
+  countdowns?:
     | T
     | {
         title?: T;
         endDateTime?: T;
+        id?: T;
       };
   id?: T;
   blockName?: T;
