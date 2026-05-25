@@ -51,6 +51,7 @@ import { ContentBlock } from '@/blocks/Content/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
 
 import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
+import { populateUpdatedBy } from '@/hooks/populateUpdatedBy'
 
 const BLOCKS = [
   HeroBannerBlock,
@@ -211,10 +212,21 @@ export const Pages: CollectionConfig<'pages'> = {
     slugField({
       slugify: ({ data }) => slugify(data.title),
     }),
+    {
+      name: 'updatedBy',
+      type: 'relationship',
+      relationTo: 'users',
+      label: 'Последнее изменение',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        placeholder: '',
+      },
+    },
   ],
   hooks: {
     afterChange: [revalidatePage],
-    beforeChange: [populatePublishedAt],
+    beforeChange: [populatePublishedAt, populateUpdatedBy],
     afterDelete: [revalidateDelete],
   },
   versions: {
@@ -224,7 +236,7 @@ export const Pages: CollectionConfig<'pages'> = {
       },
       schedulePublish: true,
     },
-    maxPerDoc: 50,
+    maxPerDoc: 85,
   },
   folders: true,
 }

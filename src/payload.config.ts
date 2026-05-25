@@ -62,6 +62,7 @@ export default buildConfig({
         },
       ],
     },
+    dateFormat: 'dd MMMM yyyy, k:mm',
   },
   i18n: {
     supportedLanguages: { ru },

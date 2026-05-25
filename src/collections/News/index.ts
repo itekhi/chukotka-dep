@@ -9,6 +9,7 @@ import {
 
 import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
+import { populateUpdatedBy } from '@/hooks/populateUpdatedBy'
 
 export const News: CollectionConfig<'news'> = {
   slug: 'news',
@@ -88,8 +89,20 @@ export const News: CollectionConfig<'news'> = {
         ],
       },
     },
+    {
+      name: 'updatedBy',
+      type: 'relationship',
+      relationTo: 'users',
+      label: 'Последнее изменение',
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        placeholder: '',
+      },
+    },
   ],
   hooks: {
+    beforeChange: [populateUpdatedBy],
     // afterChange: [revalidatePost],
     // afterRead: [populateAuthors],
     // afterDelete: [revalidateDelete],

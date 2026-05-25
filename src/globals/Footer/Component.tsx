@@ -118,14 +118,14 @@ export async function Footer() {
             </div>
           </div>
 
-          {/* Нижняя полоса - Политика и Телеграм */}
+          {/* Нижняя строка - Политика и Телеграм */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-7 w-full mt-11">
             <CMSLink
               {...privacyPolicyLink}
               className="p-base hover:text-white/70 transition-colors"
               download={false}
             >
-              Политика обработки персональных
+              Правила обработки персональных
               <br />
               данных и конфиденциальности сайта
             </CMSLink>
