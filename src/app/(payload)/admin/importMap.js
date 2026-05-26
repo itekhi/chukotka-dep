@@ -21,6 +21,7 @@ import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 }
 import { SlugField as SlugField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
 import { FolderTableCell as FolderTableCell_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 import { FolderField as FolderField_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
+import { default as default_96d62192c5a459e70b5bc6833dcd5565 } from '@/components/AdminCustomVersionsView'
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { FolderTypeField as FolderTypeField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
 import { RowLabel as RowLabel_17c6ef4bfe47bfa29d923fb5718170b7 } from '@/globals/Header/RowLabel'
@@ -54,6 +55,7 @@ export const importMap = {
   "@payloadcms/next/client#SlugField": SlugField_2b8867833a34864a02ddf429b0728a40,
   "@payloadcms/next/rsc#FolderTableCell": FolderTableCell_f9c02e79a4aed9a3924487c0cd4cafb1,
   "@payloadcms/next/rsc#FolderField": FolderField_f9c02e79a4aed9a3924487c0cd4cafb1,
+  "@/components/AdminCustomVersionsView#default": default_96d62192c5a459e70b5bc6833dcd5565,
   "@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient": HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/next/client#FolderTypeField": FolderTypeField_2b8867833a34864a02ddf429b0728a40,
   "@/globals/Header/RowLabel#RowLabel": RowLabel_17c6ef4bfe47bfa29d923fb5718170b7,

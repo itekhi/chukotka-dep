@@ -105,6 +105,15 @@ export const Pages: CollectionConfig<'pages'> = {
     slug: true,
   },
   admin: {
+    components: {
+      views: {
+        edit: {
+          versions: {
+            Component: '@/components/AdminCustomVersionsView',
+          },
+        },
+      },
+    },
     defaultColumns: ['title', 'slug', 'updatedAt'],
     livePreview: {
       url: ({ data, req }) =>

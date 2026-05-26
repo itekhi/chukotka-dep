@@ -30,6 +30,15 @@ export const News: CollectionConfig<'news'> = {
     publishedAt: true,
   },
   admin: {
+    components: {
+      views: {
+        edit: {
+          versions: {
+            Component: '@/components/AdminCustomVersionsView',
+          },
+        },
+      },
+    },
     defaultColumns: ['title', 'slug', 'updatedAt'],
     useAsTitle: 'title',
   },
