@@ -17,7 +17,7 @@ export const Users: CollectionConfig = {
     update: adminOnly,
   },
   admin: {
-    defaultColumns: ['name', 'email'],
+    defaultColumns: ['name', 'email', 'role'],
     useAsTitle: 'name',
   },
   auth: true,
@@ -47,4 +47,4 @@ export const Users: CollectionConfig = {
   timestamps: true,
 }
 
-// db.users.updateOne({ email: "user@example.com" }, { $set: { role: "admin" } })
+// db.users.updateOne({ email: "itekhi@yandex.ru" }, { $set: { role: "admin" } })
