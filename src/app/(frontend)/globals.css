@@ -297,6 +297,13 @@
     width: 0px;
   }
 
+  .link {
+    /*@apply ;*/
+  }
+  .link-hover {
+    @apply hover:text-darkish/70 transition-colors;
+  }
+
   /*
     Components
   */

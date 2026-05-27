@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
+import { adminOnly } from '../../access/adminOnly'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -10,10 +11,10 @@ export const Users: CollectionConfig = {
   },
   access: {
     admin: authenticated,
-    create: authenticated,
-    delete: authenticated,
-    read: authenticated,
-    update: authenticated,
+    create: adminOnly,
+    delete: adminOnly,
+    read: adminOnly,
+    update: adminOnly,
   },
   admin: {
     defaultColumns: ['name', 'email'],
@@ -26,6 +27,24 @@ export const Users: CollectionConfig = {
       type: 'text',
       label: 'Имя',
     },
+    {
+      name: 'role',
+      type: 'select',
+      label: 'Роль',
+      required: true,
+      defaultValue: 'manager',
+      options: [
+        { label: 'Админ', value: 'admin' },
+        { label: 'Менеджер', value: 'manager' },
+      ],
+      admin: {
+        condition: (data, siblingData, { user }) => {
+          return user?.role === 'admin'
+        },
+      },
+    },
   ],
   timestamps: true,
 }
+
+// db.users.updateOne({ email: "user@example.com" }, { $set: { role: "admin" } })

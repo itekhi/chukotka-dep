@@ -10,7 +10,7 @@ type CardType = React.FC<{
 }>
 
 const Card: CardType = ({ data, className }) => {
-  const { photo, fullName, description, contacts } = data
+  const { photo, fullName, description, postscriptum, contacts } = data
 
   return (
     <article className={cn('flex flex-col bg-white rounded-[20px] overflow-hidden', className)}>
@@ -35,6 +35,8 @@ const Card: CardType = ({ data, className }) => {
             </div>
           </div>
         )}
+
+        {postscriptum && <p className="p-xs mt-2.5">{postscriptum}</p>}
       </div>
     </article>
   )

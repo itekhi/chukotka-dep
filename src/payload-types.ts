@@ -414,8 +414,9 @@ export interface TeamCardsBlock {
     | {
         photo: string | Media;
         fullName: string;
-        description: string;
+        description?: string | null;
         contacts?: Contacts;
+        postscriptum?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -588,6 +589,7 @@ export interface News {
 export interface User {
   id: string;
   name?: string | null;
+  role?: ('admin' | 'manager') | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -1662,8 +1664,22 @@ export interface AllDocumentsBlock {
  * via the `definition` "HeadingBlock".
  */
 export interface HeadingBlock {
-  title?: string | null;
+  type: 'h1' | 'h2' | 'h3' | 'p';
+  title: string;
+  subline?: boolean | null;
   hidden?: boolean | null;
+  horizontalAlignment?: ('flex-start' | 'center' | 'flex-end') | null;
+  link: {
+    type: 'off' | 'reference' | 'document' | 'custom';
+    newTab?: boolean | null;
+    reference?: {
+      relationTo: 'pages';
+      value: string | Page;
+    } | null;
+    document?: (string | null) | Document;
+    url?: string | null;
+    anchor?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'heading';
@@ -2047,6 +2063,7 @@ export interface TeamCardsBlockSelect<T extends boolean = true> {
         fullName?: T;
         description?: T;
         contacts?: T | ContactsSelect<T>;
+        postscriptum?: T;
         id?: T;
       };
   id?: T;
@@ -2984,8 +3001,21 @@ export interface AllDocumentsBlockSelect<T extends boolean = true> {
  * via the `definition` "HeadingBlock_select".
  */
 export interface HeadingBlockSelect<T extends boolean = true> {
+  type?: T;
   title?: T;
+  subline?: T;
   hidden?: T;
+  horizontalAlignment?: T;
+  link?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        document?: T;
+        url?: T;
+        anchor?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -3112,6 +3142,7 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

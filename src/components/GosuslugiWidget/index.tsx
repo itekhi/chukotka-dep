@@ -49,7 +49,7 @@ export default function GosuslugiWidget({ className }: { className?: string }) {
         onReady={() => {
           try {
             // @ts-expect-error Widget is a function coming from script
-            widget.current = Widget('https://pos.gosuslugi.ru/form', 392552)
+            widget.current = Widget('https://pos.gosuslugi.ru/form', 407769)
             console.info('Gosuglugi Widget ready')
           } catch (error) {
             console.error('Gosuslugi Widget error:', error)
