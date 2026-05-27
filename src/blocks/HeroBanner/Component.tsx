@@ -17,7 +17,7 @@ export const HeroBannerBlock: React.FC<HeroBannerProps> = ({
       <div className="h-72 md:h-105 rounded-3xl overflow-hidden relative">
         <ImageMedia
           resource={image}
-          // size="100vw, (min-width: 1376px) 1400px"
+          size="(min-width: 1376px) 1312px, (min-width: 1024px) 976px, (min-width: 768px) 1104px, (min-width: 640px) 912px, 94vw"
           loading="eager"
           priority={titleAsH1 ?? false}
           className="size-full object-cover object-top"
