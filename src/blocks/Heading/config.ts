@@ -19,6 +19,7 @@ export const HeadingBlock: Block = {
       name: 'type',
       type: 'radio',
       required: true,
+      defaultValue: 'h2',
       options: [
         { label: 'H1', value: 'h1' },
         { label: 'H2', value: 'h2' },
