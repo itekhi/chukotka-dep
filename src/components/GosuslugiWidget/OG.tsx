@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Script from 'next/script'
+import BlockContainer from '@/blocks/BlockContainer'
 
 export function GosuslugiOG() {
   const [isMounted, setIsMounted] = useState(false)
@@ -15,7 +16,7 @@ export function GosuslugiOG() {
   }
 
   return (
-    <>
+    <BlockContainer>
       <div id="e329fb40-widget-pos"></div>
       <Script
         id="e329fb40"
@@ -32,6 +33,6 @@ export function GosuslugiOG() {
           }
         }}
       />
-    </>
+    </BlockContainer>
   )
 }
