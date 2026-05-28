@@ -1,15 +1,9 @@
 import Image from 'next/image'
 
 import { cn } from '@/utilities/ui'
-import { WidgetScript } from './WidgetScript'
+import WidgetScript from './WidgetScript'
 
-// declare global {
-//   interface Window {
-//     Widget: () => void;
-//   }
-// }
-
-export function GosuslugiWidget({ className }: { className?: string }) {
+export default function GosuslugiWidget({ className }: { className?: string }) {
   return (
     <>
       <button
