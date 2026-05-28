@@ -1,7 +1,19 @@
 'use client'
+import { useState, useEffect } from 'react'
 import Script from 'next/script'
 
 export function GosuslugiOG() {
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  // Prevent server-side rendering entirely to avoid Error 418
+  if (!isMounted) {
+    return null
+  }
+
   return (
     <>
       <div id="e329fb40-widget-pos"></div>
@@ -13,6 +25,11 @@ export function GosuslugiOG() {
         data-org-id="34734"
         onReady={() => {
           console.info('Gosuslugi OG widget ready!')
+
+          // manually invoke the script's global widget function.
+          if (typeof window !== 'undefined' && typeof (window as any).widget === 'function') {
+            ;(window as any).widget()
+          }
         }}
       />
     </>
