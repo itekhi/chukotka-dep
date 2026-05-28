@@ -3,7 +3,7 @@ import Image from 'next/image'
 import type { Footer, Setting } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
-import GosuslugiWidget from '@/components/GosuslugiWidget'
+import { GosuslugiWidget, GosuslugiOG } from '@/components/GosuslugiWidget'
 import { formatPhone } from '@/fields/phone'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import { cn } from '@/utilities/ui'
@@ -24,6 +24,8 @@ export async function Footer() {
 
   return (
     <>
+      <GosuslugiOG />
+
       <footer id="footer" className="mt-auto bg-primary-muted rounded-t-4xl relative">
         <div className="container flex flex-col text-white pt-4 pb-8 md:py-8 xl:py-11">
           <div className="flex flex-col items-stretch sm:flex-row w-full bg-white rounded-2.5xl">
