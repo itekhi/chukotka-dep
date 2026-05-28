@@ -16,7 +16,7 @@ export function GosuslugiOG() {
   }
 
   return (
-    <BlockContainer>
+    <BlockContainer className="mb-2.5">
       <div id="e329fb40-widget-pos"></div>
       <Script
         id="e329fb40"
