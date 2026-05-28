@@ -27,6 +27,7 @@ export function WidgetScript() {
           console.error('Gosuslugi Widget error:', error)
         }
       }}
+      suppressHydrationWarning
     />
   )
 }

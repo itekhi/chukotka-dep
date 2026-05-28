@@ -30,6 +30,7 @@ export function GosuslugiOG() {
             ;(window as any).widget()
           }
         }}
+        suppressHydrationWarning
       />
     </BlockContainer>
   )
