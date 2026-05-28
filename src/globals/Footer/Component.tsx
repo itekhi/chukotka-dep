@@ -25,7 +25,7 @@ export async function Footer() {
 
   return (
     <>
-      <GosuslugiOG />
+      {/*<GosuslugiOG />*/}
 
       <footer id="footer" className="mt-auto bg-primary-muted rounded-t-4xl relative">
         <div className="container flex flex-col text-white pt-4 pb-8 md:py-8 xl:py-11">
@@ -41,7 +41,7 @@ export async function Footer() {
                 Оставьте интересующий вас вопрос
               </p>
 
-              <GosuslugiWidget className="w-full sm:w-auto" />
+              {/*<GosuslugiWidget className="w-full sm:w-auto" />*/}
             </div>
 
             <div className="grow relative z-0 -mt-8 ml-5 sm:m-0">
