@@ -25,8 +25,6 @@ export function GosuslugiOG() {
         data-src-host="https://pos.gosuslugi.ru/og"
         data-org-id="34734"
         onReady={() => {
-          console.info('Gosuslugi OG widget ready!')
-
           // manually invoke the script's global widget function.
           if (typeof window !== 'undefined' && typeof (window as any).widget === 'function') {
             ;(window as any).widget()

@@ -1,8 +1,7 @@
-'use client'
-import { useRef } from 'react'
-import Script from 'next/script'
 import Image from 'next/image'
+
 import { cn } from '@/utilities/ui'
+import { WidgetScript } from './WidgetScript'
 
 // declare global {
 //   interface Window {
@@ -11,8 +10,6 @@ import { cn } from '@/utilities/ui'
 // }
 
 export function GosuslugiWidget({ className }: { className?: string }) {
-  const widget = useRef(null)
-
   return (
     <>
       <button
@@ -43,19 +40,7 @@ export function GosuslugiWidget({ className }: { className?: string }) {
         </div>
       </button>
 
-      <Script
-        src="https://pos.gosuslugi.ru/bin/script.min.js"
-        strategy="afterInteractive"
-        onReady={() => {
-          try {
-            // @ts-expect-error Widget is a function coming from script
-            widget.current = Widget('https://pos.gosuslugi.ru/form', 392552)
-            console.info('Gosuglugi Widget ready')
-          } catch (error) {
-            console.error('Gosuslugi Widget error:', error)
-          }
-        }}
-      />
+      <WidgetScript />
     </>
   )
 }
