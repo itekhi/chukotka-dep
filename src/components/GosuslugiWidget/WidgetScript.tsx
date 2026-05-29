@@ -5,7 +5,7 @@ export default function WidgetScript() {
   return (
     <Script
       src="https://pos.gosuslugi.ru/bin/script.min.js"
-      strategy="afterInteractive"
+      strategy="lazyOnload"
       onReady={() => {
         try {
           // @ts-expect-error Widget is a function coming from script

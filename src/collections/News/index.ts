@@ -10,6 +10,7 @@ import {
 import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { populateUpdatedBy } from '@/hooks/populateUpdatedBy'
+import { revalidateHomePageOnChange, revalidateHomePageOnDelete } from './hooks/revalidateHomePage'
 
 export const News: CollectionConfig<'news'> = {
   slug: 'news',
@@ -112,9 +113,9 @@ export const News: CollectionConfig<'news'> = {
   ],
   hooks: {
     beforeChange: [populateUpdatedBy],
-    // afterChange: [revalidatePost],
+    afterChange: [revalidateHomePageOnChange],
     // afterRead: [populateAuthors],
-    // afterDelete: [revalidateDelete],
+    afterDelete: [revalidateHomePageOnDelete],
   },
   versions: {
     drafts: {
