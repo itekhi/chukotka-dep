@@ -2,8 +2,7 @@ import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'paylo
 
 import { revalidatePath } from 'next/cache'
 
-import type { Page } from '../../../payload-types'
-import { revalidatePage } from '@/collections/Pages/hooks/revalidatePage'
+import type { Page } from '@/payload-types'
 
 export const revalidateHomePageOnChange: CollectionAfterChangeHook<Page> = ({
   doc,
